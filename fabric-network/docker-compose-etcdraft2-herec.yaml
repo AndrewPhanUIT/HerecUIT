@@ -1,0 +1,77 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+volumes:
+  orderer2.herec.uit:
+  orderer3.herec.uit:
+  orderer4.herec.uit:
+  orderer5.herec.uit:
+
+networks:
+  herec:
+
+services:
+
+  orderer2.herec.uit:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer2.herec.uit
+    networks:
+    - herec
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer2.herec.uit/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer2.herec.uit/tls/:/var/hyperledger/orderer/tls
+        - orderer2.herec.uit:/var/hyperledger/production/orderer
+    ports:
+    - 8050:7050
+
+  orderer3.herec.uit:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer3.herec.uit
+    networks:
+    - herec
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer3.herec.uit/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer3.herec.uit/tls/:/var/hyperledger/orderer/tls
+        - orderer3.herec.uit:/var/hyperledger/production/orderer
+    ports:
+    - 9050:7050
+
+  orderer4.herec.uit:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer4.herec.uit
+    networks:
+    - herec
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer4.herec.uit/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer4.herec.uit/tls/:/var/hyperledger/orderer/tls
+        - orderer4.herec.uit:/var/hyperledger/production/orderer
+    ports:
+    - 10050:7050
+
+  orderer5.herec.uit:
+    extends:
+      file: base/peer-base.yaml
+      service: orderer-base
+    container_name: orderer5.herec.uit
+    networks:
+    - herec
+    volumes:
+        - ./channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer5.herec.uit/msp:/var/hyperledger/orderer/msp
+        - ./crypto-config/ordererOrganizations/herec.uit/orderers/orderer5.herec.uit/tls/:/var/hyperledger/orderer/tls
+        - orderer5.herec.uit:/var/hyperledger/production/orderer
+    ports:
+    - 11050:7050

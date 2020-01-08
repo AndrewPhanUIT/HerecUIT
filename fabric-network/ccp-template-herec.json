@@ -1,0 +1,60 @@
+{
+    "name": "herec-uit-${ORGPREFIX}",
+    "version": "1.0.0",
+    "client": {
+        "organization": "${ORG}",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "${ORG}": {
+            "mspid": "${ORG}MSP",
+            "peers": [
+                "peer0.${ORGPREFIX}.herec.uit",
+                "peer1.${ORGPREFIX}.herec.uit"
+            ],
+            "certificateAuthorities": [
+                "ca.${ORGPREFIX}.herec.uit"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.${ORGPREFIX}.herec.uit": {
+            "url": "grpcs://localhost:${P0PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.${ORGPREFIX}.herec.uit",
+                "hostnameOverride": "peer0.${ORGPREFIX}.herec.uit"
+            }
+        },
+        "peer1.${ORGPREFIX}.herec.uit": {
+            "url": "grpcs://localhost:${P1PORT}",
+            "tlsCACerts": {
+                "pem": "${PEERPEM}"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.${ORGPREFIX}.herec.uit",
+                "hostnameOverride": "peer1.${ORGPREFIX}.herec.uit"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.${ORGPREFIX}.herec.uit": {
+            "url": "https://localhost:${CAPORT}",
+            "caName": "ca-org-${ORGPREFIX}",
+            "tlsCACerts": {
+                "pem": "${CAPEM}"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}

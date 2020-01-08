@@ -1,0 +1,110 @@
+# Copyright IBM Corp. All Rights Reserved.
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+
+version: '2'
+
+services:
+
+  orderer.herec.uit:
+    container_name: orderer.herec.uit
+    extends:
+      file: peer-base.yaml
+      service: orderer-base
+    volumes:
+        - ../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block
+        - ../crypto-config/ordererOrganizations/herec.uit/orderers/orderer.herec.uit/msp:/var/hyperledger/orderer/msp
+        - ../crypto-config/ordererOrganizations/herec.uit/orderers/orderer.herec.uit/tls/:/var/hyperledger/orderer/tls
+        - orderer.herec.uit:/var/hyperledger/production/orderer
+    ports:
+      - 7050:7050
+
+  peer0.client.herec.uit:
+    container_name: peer0.client.herec.uit
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.client.herec.uit
+      - CORE_PEER_ADDRESS=peer0.client.herec.uit:7051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.client.herec.uit:7052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7052
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.client.herec.uit:8051
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.client.herec.uit:7051
+      - CORE_PEER_LOCALMSPID=ClientMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/client.herec.uit/peers/peer0.client.herec.uit/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/client.herec.uit/peers/peer0.client.herec.uit/tls:/etc/hyperledger/fabric/tls
+        - peer0.client.herec.uit:/var/hyperledger/production
+    ports:
+      - 7051:7051
+
+  peer1.client.herec.uit:
+    container_name: peer1.client.herec.uit
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.client.herec.uit
+      - CORE_PEER_ADDRESS=peer1.client.herec.uit:8051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:8051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.client.herec.uit:8052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:8052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.client.herec.uit:8051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.client.herec.uit:7051
+      - CORE_PEER_LOCALMSPID=ClientMSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/client.herec.uit/peers/peer1.client.herec.uit/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/client.herec.uit/peers/peer1.client.herec.uit/tls:/etc/hyperledger/fabric/tls
+        - peer1.client.herec.uit:/var/hyperledger/production
+
+    ports:
+      - 8051:8051
+
+  peer0.quan12.herec.uit:
+    container_name: peer0.quan12.herec.uit
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer0.quan12.herec.uit
+      - CORE_PEER_ADDRESS=peer0.quan12.herec.uit:9051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:9051
+      - CORE_PEER_CHAINCODEADDRESS=peer0.quan12.herec.uit:9052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:9052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.quan12.herec.uit:9051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.quan12.herec.uit:10051
+      - CORE_PEER_LOCALMSPID=Quan12MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/quan12.herec.uit/peers/peer0.quan12.herec.uit/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/quan12.herec.uit/peers/peer0.quan12.herec.uit/tls:/etc/hyperledger/fabric/tls
+        - peer0.quan12.herec.uit:/var/hyperledger/production
+    ports:
+      - 9051:9051
+
+  peer1.quan12.herec.uit:
+    container_name: peer1.quan12.herec.uit
+    extends:
+      file: peer-base.yaml
+      service: peer-base
+    environment:
+      - CORE_PEER_ID=peer1.quan12.herec.uit
+      - CORE_PEER_ADDRESS=peer1.quan12.herec.uit:10051
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:10051
+      - CORE_PEER_CHAINCODEADDRESS=peer1.quan12.herec.uit:10052
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:10052
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.quan12.herec.uit:10051
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.quan12.herec.uit:9051
+      - CORE_PEER_LOCALMSPID=Quan12MSP
+    volumes:
+        - /var/run/:/host/var/run/
+        - ../crypto-config/peerOrganizations/quan12.herec.uit/peers/peer1.quan12.herec.uit/msp:/etc/hyperledger/fabric/msp
+        - ../crypto-config/peerOrganizations/quan12.herec.uit/peers/peer1.quan12.herec.uit/tls:/etc/hyperledger/fabric/tls
+        - peer1.quan12.herec.uit:/var/hyperledger/production
+    ports:
+      - 10051:10051z
