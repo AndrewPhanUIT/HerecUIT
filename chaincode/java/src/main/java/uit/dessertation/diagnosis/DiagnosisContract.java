@@ -28,22 +28,20 @@ public class DiagnosisContract implements ContractInterface {
     @Transaction()
     public void initLedger(Context ctx) {
         ChaincodeStub stub = ctx.getStub();
-        List<Medication> medications = new ArrayList<Medication>();
-        medications.add(new Medication(6, "2 lần / ngày", "Thuốc ho cho bé", "Uống vào buổi sáng và tối", "20200101",
-                "20200103"));
         List<Allergy> allergies = new ArrayList<Allergy>();
         allergies.add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
-        List<String> symptons = new ArrayList<String>();
-        symptons.add("Ho");
-        symptons.add("Sốt cao");
-        Diagnosis diagnosis = new Diagnosis("ORG001", "Bệnh viện quận 12", "20200201", "Vũ Mạnh Cường @DT001",
-                allergies, symptons, medications);
-        List<Diagnosis> lstDiagnosis = Arrays.asList(new Diagnosis[] {diagnosis});
-        DiagnosisDetail detail = new DiagnosisDetail("DIAG001", "Andrew Phan", "19971226", "0783550324",
-                "Phường Tân Thới Nhất, Quận 12, Thành phố Hồ Chí Minh", new Gson().toJson(lstDiagnosis));
+        Diagnosis diagnosis = new Diagnosis("ORG001", "Bệnh viện quận 12", "20200201", "Vũ Mạnh Cường @DT001");
+        diagnosis.getSymptons().add("Ho");
+        diagnosis.getSymptons().add("Sot cao");
+        diagnosis.getMedications().add(new Medication(6, "2 lần / ngày", "Thuốc ho cho bé", "Uống vào buổi sáng và tối", "20200101",
+                "20200103"));
+        diagnosis.getAllergies().add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
+        DiagnosisDetail detail = new DiagnosisDetail("PT001", "Andrew Phan", "19971226", "0783550324",
+                "Phường Tân Thới Nhất, Quận 12, Thành phố Hồ Chí Minh");
+        detail.getDiagnosis().add(diagnosis);
         String diagnosisState = genson.serialize(detail);
-        stub.putStringState(detail.getDiagnosisNumber(), diagnosisState);
-        logger.info("Added " + detail);
+        stub.putStringState("DIG001", diagnosisState);
+        logger.info("Added " + diagnosisState);
     }
 
     @Transaction()
@@ -58,4 +56,5 @@ public class DiagnosisContract implements ContractInterface {
         DiagnosisDetail detail = genson.deserialize(diagnosisState, DiagnosisDetail.class);
         return detail;
     }
+    
 }

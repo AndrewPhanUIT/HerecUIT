@@ -3,51 +3,34 @@ package uit.dessertation.diagnosis;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hyperledger.fabric.contract.annotation.Property;
+
+import com.owlike.genson.annotation.JsonProperty;
+
+import org.hyperledger.fabric.contract.annotation.DataType;
+
+@DataType()
 public class Diagnosis {
+    @Property()
+    private final String id;
 
-    private String id;
-    private String organization;
-    private String clincian;
+    @Property()
+    private final String organization;
+
+    @Property()
+    private final String clincian;
+
+    @Property()
     private String createdAt;
-    private List<Allergy> allergies = new ArrayList<Allergy>();
-    private List<String> symptons = new ArrayList<>();
-    private List<Medication> medications = new ArrayList<>();
 
-    public Diagnosis(String id, String organization, String clincian, String createdAt, List<Allergy> allergies,
-            List<String> symptons, List<Medication> medications) {
-        super();
-        this.id = id;
-        this.organization = organization;
-        this.clincian = clincian;
-        this.createdAt = createdAt;
-        this.allergies = allergies;
-        this.symptons = symptons;
-        this.medications = medications;
-    }
+    @Property()
+    private final List<Allergy> allergies = new ArrayList<Allergy>();
 
-    public String getId() {
-        return id;
-    }
+    @Property()
+    private final List<String> symptons = new ArrayList<>();
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getOrganization() {
-        return organization;
-    }
-
-    public void setOrganization(String organization) {
-        this.organization = organization;
-    }
-
-    public String getClincian() {
-        return clincian;
-    }
-
-    public void setClincian(String clincian) {
-        this.clincian = clincian;
-    }
+    @Property()
+    private final List<Medication> medications = new ArrayList<>();
 
     public String getCreatedAt() {
         return createdAt;
@@ -57,28 +40,36 @@ public class Diagnosis {
         this.createdAt = createdAt;
     }
 
-    public List<Allergy> getAllergies() {
-        return allergies;
+    public String getId() {
+        return id;
     }
 
-    public void setAllergies(List<Allergy> allergies) {
-        this.allergies = allergies;
+    public String getOrganization() {
+        return organization;
+    }
+
+    public String getClincian() {
+        return clincian;
+    }
+
+    public List<Allergy> getAllergies() {
+        return allergies;
     }
 
     public List<String> getSymptons() {
         return symptons;
     }
 
-    public void setSymptons(List<String> symptons) {
-        this.symptons = symptons;
-    }
-
     public List<Medication> getMedications() {
         return medications;
     }
 
-    public void setMedications(List<Medication> medications) {
-        this.medications = medications;
+    public Diagnosis(@JsonProperty("id") String id, @JsonProperty("organization") String organization,
+            @JsonProperty("clinician") String clincian, @JsonProperty("createdAt") String createdAt) {
+        super();
+        this.id = id;
+        this.organization = organization;
+        this.clincian = clincian;
+        this.createdAt = createdAt;
     }
-
 }

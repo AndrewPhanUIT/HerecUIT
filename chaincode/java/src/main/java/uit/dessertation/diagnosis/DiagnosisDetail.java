@@ -1,5 +1,8 @@
 package uit.dessertation.diagnosis;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
@@ -9,7 +12,7 @@ import com.owlike.genson.annotation.JsonProperty;
 public final class DiagnosisDetail {
 
     @Property()
-    private final String diagnosisNumber;
+    private final String patientId;
     @Property()
     private final String fullName;
     @Property()
@@ -19,23 +22,10 @@ public final class DiagnosisDetail {
     @Property()
     private final String address;
     @Property()
-    private final String diagnosis;
+    private final List<Diagnosis> diagnosis = new ArrayList<Diagnosis>();
 
-    public DiagnosisDetail(@JsonProperty("diagnosisNumber") String diagnosisNumber,
-            @JsonProperty("fullName") String fullName, @JsonProperty("dob") String dob,
-            @JsonProperty("phoneNumber") String phoneNumber, @JsonProperty("address") String address,
-            @JsonProperty("diagnosis") String diagnosis) {
-        super();
-        this.diagnosisNumber = diagnosisNumber;
-        this.fullName = fullName;
-        this.dob = dob;
-        this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.diagnosis = diagnosis;
-    }
-
-    public String getDiagnosisNumber() {
-        return diagnosisNumber;
+    public String getPatientId() {
+        return patientId;
     }
 
     public String getFullName() {
@@ -54,8 +44,19 @@ public final class DiagnosisDetail {
         return address;
     }
 
-    public String getDiagnosis() {
+    public List<Diagnosis> getDiagnosis() {
         return diagnosis;
+    }
+
+    public DiagnosisDetail(@JsonProperty("patientId") String patientId, @JsonProperty("fullName") String fullName,
+            @JsonProperty("dob") String dob, @JsonProperty("phoneNumber") String phoneNumber,
+            @JsonProperty("address") String address) {
+        super();
+        this.patientId = patientId;
+        this.fullName = fullName;
+        this.dob = dob;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
     }
 
 }

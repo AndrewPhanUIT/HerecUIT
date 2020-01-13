@@ -1,78 +1,58 @@
 package uit.dessertation.diagnosis;
 
+import org.hyperledger.fabric.contract.annotation.DataType;
+import org.hyperledger.fabric.contract.annotation.Property;
+
+import com.owlike.genson.annotation.JsonProperty;
+
+@DataType()
 public class Medication {
-
-    private int quantity;
-
-    private String doseQuantity;
-
-    private String name;
-
-    private String not;
-
-    private String endDate;
-
-    private String startDate;
-
-    public Medication(int quantity, String doseQuantity, String name, String not, String endDate, String startDate) {
-        super();
-        this.quantity = quantity;
-        this.doseQuantity = doseQuantity;
-        this.name = name;
-        this.not = not;
-        this.endDate = endDate;
-        this.startDate = startDate;
-    }
-
-    public Medication() {
-        super();
-    }
+    @Property()
+    private final int quantity;
+    @Property()
+    private final String doseQuantity;
+    @Property()
+    private final String name;
+    @Property()
+    private final String note;
+    @Property()
+    private final String endDate;
+    @Property()
+    private final String startDate;
 
     public int getQuantity() {
         return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
     }
 
     public String getDoseQuantity() {
         return doseQuantity;
     }
 
-    public void setDoseQuantity(String doseQuantity) {
-        this.doseQuantity = doseQuantity;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getNot() {
-        return not;
-    }
-
-    public void setNot(String not) {
-        this.not = not;
+    public String getNote() {
+        return note;
     }
 
     public String getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
     public String getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(String startDate) {
+    public Medication(@JsonProperty("quantity") int quantity, @JsonProperty("doseQuantity") String doseQuantity,
+            @JsonProperty("name") String name, @JsonProperty("note") String note,
+            @JsonProperty("endDate") String endDate, @JsonProperty("startDate") String startDate) {
+        super();
+        this.quantity = quantity;
+        this.doseQuantity = doseQuantity;
+        this.name = name;
+        this.note = note;
+        this.endDate = endDate;
         this.startDate = startDate;
     }
 
