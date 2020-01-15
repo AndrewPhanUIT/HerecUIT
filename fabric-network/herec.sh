@@ -1,6 +1,12 @@
 export PATH=${PWD}/./bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}
 export VERBOSE=false
+fabricNetworkDirPath=$2
+if [[ "$fabricNetworkDirPath" == *"/fabric-network/"* ]]; then
+  export FABRIC_NETWORK_DIR_PATH=$fabricNetworkDirPath
+else
+  export FABRIC_NETWORK_DIR_PATH="."
+fi
 
 # Print the usage message
 function printHelp() {
@@ -261,10 +267,10 @@ function generateCerts() {
   echo "##########################################################"
 
   if [ -d "crypto-config" ]; then
-    rm -Rf crypto-config
+    rm -Rf ${FABRIC_NETWORK_DIR_PATH}/crypto-config
   fi
   set -x
-  cryptogen generate --config=./crypto-config-herec.yaml
+  cryptogen generate --config=${FABRIC_NETWORK_DIR_PATH}/crypto-config-herec.yaml
   res=$?
   set +x
   if [ $res -ne 0 ]; then
@@ -273,7 +279,7 @@ function generateCerts() {
   fi
   echo
   echo "Generate CCP files for Org1 and Org2"
-  ./ccp-generate-herec.sh
+  ${FABRIC_NETWORK_DIR_PATH}/ccp-generate-herec.sh
 }
 
 # Generate orderer genesis block, channel configuration transaction and
@@ -321,15 +327,10 @@ SYS_CHANNEL="herec-sys-channel"
 CHANNEL_NAME="herecchannel"
 
 COMPOSE_FILE=docker-compose-cli-herec.yaml
-
 COMPOSE_FILE_COUCH=docker-compose-couch-herec.yaml
-
 COMPOSE_FILE_ORG3=docker-compose-org3.yaml
-
 COMPOSE_FILE_KAFKA=docker-compose-kafka.yaml
-
 COMPOSE_FILE_RAFT2=docker-compose-etcdraft2-herec.yaml
-
 COMPOSE_FILE_CA=docker-compose-ca-herec.yaml
 #
 # use golang as the default language for chaincode

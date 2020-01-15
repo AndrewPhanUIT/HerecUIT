@@ -41,7 +41,6 @@ public class DiagnosisContract implements ContractInterface {
         DiagnosisDetail detail = new DiagnosisDetail("PT001", "Andrew Phan", "19971226", "0783550324",
                 "Phường Tân Thới Nhất, Quận 12, Thành phố Hồ Chí Minh", gson.toJson(lstDiagnosis));
         String diagnosisState = genson.serialize(detail);
-        System.out.println(diagnosisState);
         stub.putStringState("DIG001", diagnosisState);
     }
 
@@ -58,7 +57,6 @@ public class DiagnosisContract implements ContractInterface {
     }
 
     public static void main(String[] args) {
-        new DiagnosisContract().initLedger(null);
     }
 
     /**
@@ -68,10 +66,14 @@ public class DiagnosisContract implements ContractInterface {
      * @return
      */
     @Transaction()
-    public DiagnosisDetail createDiagnosis(Context ctx, final String diagnosis) {
+    public DiagnosisDetail createDiagnosis(Context ctx, final String patientInfo, final String diagnosis) {
         ChaincodeStub stub = ctx.getStub();
-
-        return null;
+        int currentIndex = this.countDiagnosisInChannel(ctx) + 1;
+        DiagnosisDetail diagnosisDetail = genson.deserialize(patientInfo, DiagnosisDetail.class);
+        String[] lstDiagnosis = {diagnosis};
+        DiagnosisDetail newDiagnosisDetail = DiagnosisDetail.create(diagnosisDetail, genson.serialize(lstDiagnosis));
+        stub.putStringState(String.format("DIA%30d", currentIndex), genson.serialize(newDiagnosisDetail));
+        return newDiagnosisDetail;
     }
 
     /**
@@ -82,19 +84,21 @@ public class DiagnosisContract implements ContractInterface {
      * @return
      */
     @Transaction()
-    public DiagnosisDetail updateDiagnosisByPatient(Context ctx, final String patientId, final String diagnosis) {
+    public DiagnosisDetail addNewRecord(Context ctx, final String patientInfo, final String diagnosis) {
         ChaincodeStub stub = ctx.getStub();
-        DiagnosisDetail detail = queryDiagnosisByPatientId(ctx, patientId);
-        if(detail == null) {
-            return createDiagnosis(ctx, diagnosis);
+        DiagnosisDetail detail = genson.deserialize(patientInfo, DiagnosisDetail.class);
+        String keyPatientId = queryDiagnosisByPatientId(ctx, detail.getPatientId());
+        String keyPhoneNumber = this.queryDiagnosisByPatientPhoneNumber(ctx, detail.getPhoneNumber());
+        if("".equals(keyPatientId) && "".equals(keyPhoneNumber)) {
+            return createDiagnosis(ctx, patientInfo, diagnosis);
         }else {
-            
+            DiagnosisDetail diagnosisDetail = genson.deserialize(patientInfo, DiagnosisDetail.class);
+            DiagnosisDetail newDiagnosisDetail = DiagnosisDetail.addDiagnosis(diagnosisDetail, diagnosis);
+            String key = !"".equals(keyPatientId) ? keyPatientId : keyPhoneNumber;
+            stub.putStringState(key, genson.serialize(newDiagnosisDetail));
         }
         return null;
     }
-    
-    @Transaction()
-    public DiagnosisDetail updateDiagnosisById(Context ctx, )
 
     @Transaction()
     public String queryDiagnosisByPatientId(Context ctx, String patientId) {
@@ -109,6 +113,33 @@ public class DiagnosisContract implements ContractInterface {
             }
         }
         return "";
+    }
+    
+    @Transaction()
+    public String queryDiagnosisByPatientPhoneNumber(Context ctx, String phoneNumber) {
+        ChaincodeStub stub = ctx.getStub();
+        final String startKey = "DIG001";
+        final String endKey = "DIG999";
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
+        for (KeyValue result : results) {
+            DiagnosisDetail detail = genson.deserialize(result.getStringValue(), DiagnosisDetail.class);
+            if (Objects.equal(phoneNumber, detail.getPhoneNumber())) {
+                return result.getKey();
+            }
+        }
+        return "";
+    }
+    
+    public int countDiagnosisInChannel(Context ctx) {
+        ChaincodeStub stub = ctx.getStub();
+        final String startKey = "DIG001";
+        final String endKey = "DIG999";
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
+        int count = 0;
+        for (KeyValue result : results) {
+           count++;
+        }
+        return count;
     }
 
     @Transaction()

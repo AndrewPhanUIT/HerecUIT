@@ -67,4 +67,5 @@ public class Diagnosis {
         this.clincian = clincian;
         this.createdAt = createdAt;
     }
+    
 }

@@ -6,16 +6,23 @@ starttime=$(date +%s)
 CC_SRC_LANGUAGE="java"
 
 CC_RUNTIME_LANGUAGE=java
-
 CC_SRC_PATH=/opt/gopath/src/HerecUIT/chaincode/java
 
 # clean the keystore
 rm -rf ./hfc-key-store
 
-# launch network; create channel and join peer to channel
-cd fabric-network
-echo y | ./herec.sh down
-echo y | ./herec.sh up -a -n -s couchdb
+fabricNetworkDirPath=$1
+
+if [ "${fabricNetworkDirPath}" != "" ]; then
+  cd ${fabricNetworkDirPath}/fabric-network
+  echo y | ${fabricNetworkDirPath}/fabric-network/herec.sh down
+  echo y | ${fabricNetworkDirPath}/fabric-network/herec.sh up ${fabricNetworkDirPath}/fabric-network -a -n -s couchdb
+else
+  cd ./fabric-network
+  echo y | ./herec.sh down
+  echo y | ./herec.sh up -a -n -s couchdb
+fi
+
 
 export CHANNEL_NAME=herecchannel
 export COMPOSE_PROJECT_NAME=fabric-network
