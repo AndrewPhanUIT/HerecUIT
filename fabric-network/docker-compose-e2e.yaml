@@ -1,0 +1,85 @@
+version: '2'
+
+volumes:
+  orderer.herec.uit:
+  peer0.client.herec.uit:
+  peer1.client.herec.uit:
+  peer0.quan12.herec.uit:
+  peer1.quan12.herec.uit:
+
+networks:
+  herec:
+services:
+  ca-client:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-client
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.client.herec.uit-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/56d133f0b7812ec3d5ff84bd34d8b1c2b599cee8bba5d1efa456142043f27f52_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.client.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/56d133f0b7812ec3d5ff84bd34d8b1c2b599cee8bba5d1efa456142043f27f52_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/client.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peer_client
+    networks:
+      - herec
+
+  ca-quan12:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-quan12
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/aa35e18a60f5f46a87dd7e4d9f59f41acd9a15f7e4daced459a1310c1b53d237_sk
+    ports:
+      - "8054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/aa35e18a60f5f46a87dd7e4d9f59f41acd9a15f7e4daced459a1310c1b53d237_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/quan12.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peer_quan12
+    networks:
+      - herec
+
+  orderer.herec.uit:
+    extends:
+      file:   base/docker-compose-base-herec.yaml
+      service: orderer.herec.uit
+    container_name: orderer.herec.uit
+    networks:
+      - herec
+
+  peer0.client.herec.uit:
+    container_name: peer0.client.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer0.client.herec.uit
+    networks:
+      - herec
+
+  peer1.client.herec.uit:
+    container_name: peer1.client.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer1.client.herec.uit
+    networks:
+      - herec
+
+  peer0.quan12.herec.uit:
+    container_name: peer0.quan12.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer0.quan12.herec.uit
+    networks:
+      - herec
+
+  peer1.quan12.herec.uit:
+    container_name: peer1.quan12.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer1.quan12.herec.uit
+    networks:
+      - herec

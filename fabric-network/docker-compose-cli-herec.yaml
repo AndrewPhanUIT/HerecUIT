@@ -50,7 +50,7 @@ services:
       file:  base/docker-compose-base-herec.yaml
       service: peer1.quan12.herec.uit
     networks:
-      - hereczz
+      - herec
 
   cli:
     container_name: cli

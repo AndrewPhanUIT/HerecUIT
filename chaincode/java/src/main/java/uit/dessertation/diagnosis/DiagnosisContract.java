@@ -1,7 +1,6 @@
 package uit.dessertation.diagnosis;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.hyperledger.fabric.contract.Context;
@@ -13,9 +12,11 @@ import org.hyperledger.fabric.contract.annotation.License;
 import org.hyperledger.fabric.contract.annotation.Transaction;
 import org.hyperledger.fabric.shim.ChaincodeException;
 import org.hyperledger.fabric.shim.ChaincodeStub;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.hyperledger.fabric.shim.ledger.KeyModification;
+import org.hyperledger.fabric.shim.ledger.KeyValue;
+import org.hyperledger.fabric.shim.ledger.QueryResultsIterator;
 
+import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.owlike.genson.Genson;
 
@@ -23,25 +24,25 @@ import com.owlike.genson.Genson;
 @Default
 public class DiagnosisContract implements ContractInterface {
     private Genson genson = new Genson();
-    private Logger logger = LoggerFactory.getLogger(DiagnosisContract.class);
+    private final static Gson gson = new Gson();
 
     @Transaction()
     public void initLedger(Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         List<Allergy> allergies = new ArrayList<Allergy>();
         allergies.add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
-        Diagnosis diagnosis = new Diagnosis("ORG001", "Bệnh viện quận 12", "20200201", "Vũ Mạnh Cường @DT001");
+        Diagnosis diagnosis = new Diagnosis("D001", "ORG001", "Bệnh viện quận 12", "20200201", "Vũ Mạnh Cường @DT001");
         diagnosis.getSymptons().add("Ho");
         diagnosis.getSymptons().add("Sot cao");
-        diagnosis.getMedications().add(new Medication(6, "2 lần / ngày", "Thuốc ho cho bé", "Uống vào buổi sáng và tối", "20200101",
-                "20200103"));
+        diagnosis.getMedications().add(new Medication(6, "2 lần / ngày", "Thuốc ho cho bé", "Uống vào buổi sáng và tối",
+                "20200101", "20200103"));
         diagnosis.getAllergies().add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
+        Diagnosis[] lstDiagnosis = { diagnosis };
         DiagnosisDetail detail = new DiagnosisDetail("PT001", "Andrew Phan", "19971226", "0783550324",
-                "Phường Tân Thới Nhất, Quận 12, Thành phố Hồ Chí Minh");
-        detail.getDiagnosis().add(diagnosis);
+                "Phường Tân Thới Nhất, Quận 12, Thành phố Hồ Chí Minh", gson.toJson(lstDiagnosis));
         String diagnosisState = genson.serialize(detail);
+        System.out.println(diagnosisState);
         stub.putStringState("DIG001", diagnosisState);
-        logger.info("Added " + diagnosisState);
     }
 
     @Transaction()
@@ -50,11 +51,71 @@ public class DiagnosisContract implements ContractInterface {
         String diagnosisState = stub.getStringState(key);
         if (diagnosisState.isEmpty()) {
             String errorMess = String.format("Diagnosis %s does not exist", key);
-            logger.info("[ERRO] - " + errorMess);
             throw new ChaincodeException(errorMess);
         }
         DiagnosisDetail detail = genson.deserialize(diagnosisState, DiagnosisDetail.class);
         return detail;
     }
+
+    public static void main(String[] args) {
+        new DiagnosisContract().initLedger(null);
+    }
+
+    /**
+     * Tao diagnosis cho patient moi
+     * @param ctx
+     * @param diagnosis
+     * @return
+     */
+    @Transaction()
+    public DiagnosisDetail createDiagnosis(Context ctx, final String diagnosis) {
+        ChaincodeStub stub = ctx.getStub();
+
+        return null;
+    }
+
+    /**
+     * Them diagnosis vao patient hien tai
+     * @param ctx
+     * @param patientId
+     * @param diagnosis
+     * @return
+     */
+    @Transaction()
+    public DiagnosisDetail updateDiagnosisByPatient(Context ctx, final String patientId, final String diagnosis) {
+        ChaincodeStub stub = ctx.getStub();
+        DiagnosisDetail detail = queryDiagnosisByPatientId(ctx, patientId);
+        if(detail == null) {
+            return createDiagnosis(ctx, diagnosis);
+        }else {
+            
+        }
+        return null;
+    }
     
+    @Transaction()
+    public DiagnosisDetail updateDiagnosisById(Context ctx, )
+
+    @Transaction()
+    public String queryDiagnosisByPatientId(Context ctx, String patientId) {
+        ChaincodeStub stub = ctx.getStub();
+        final String startKey = "DIG001";
+        final String endKey = "DIG999";
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
+        for (KeyValue result : results) {
+            DiagnosisDetail detail = genson.deserialize(result.getStringValue(), DiagnosisDetail.class);
+            if (Objects.equal(patientId, detail.getPatientId())) {
+                return result.getKey();
+            }
+        }
+        return "";
+    }
+
+    @Transaction()
+    public List<String> getStateHistoryByKey(Context ctx, String key) {
+        ChaincodeStub stub = ctx.getStub();
+        List<String> results = new ArrayList<String>();
+        QueryResultsIterator<KeyModification> history = stub.getHistoryForKey(key);
+        return results;
+    }
 }

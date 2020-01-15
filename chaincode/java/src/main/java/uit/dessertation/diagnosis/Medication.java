@@ -1,23 +1,13 @@
 package uit.dessertation.diagnosis;
 
-import org.hyperledger.fabric.contract.annotation.DataType;
-import org.hyperledger.fabric.contract.annotation.Property;
-
 import com.owlike.genson.annotation.JsonProperty;
 
-@DataType()
 public class Medication {
-    @Property()
     private final int quantity;
-    @Property()
     private final String doseQuantity;
-    @Property()
     private final String name;
-    @Property()
     private final String note;
-    @Property()
     private final String endDate;
-    @Property()
     private final String startDate;
 
     public int getQuantity() {

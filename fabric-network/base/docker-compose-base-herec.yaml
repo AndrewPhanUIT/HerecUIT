@@ -107,4 +107,4 @@ services:
         - ../crypto-config/peerOrganizations/quan12.herec.uit/peers/peer1.quan12.herec.uit/tls:/etc/hyperledger/fabric/tls
         - peer1.quan12.herec.uit:/var/hyperledger/production
     ports:
-      - 10051:10051z
+      - 10051:10051

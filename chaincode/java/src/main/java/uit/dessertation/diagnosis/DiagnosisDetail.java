@@ -1,8 +1,5 @@
 package uit.dessertation.diagnosis;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 
@@ -22,7 +19,7 @@ public final class DiagnosisDetail {
     @Property()
     private final String address;
     @Property()
-    private final List<Diagnosis> diagnosis = new ArrayList<Diagnosis>();
+    private final String diagnosis;
 
     public String getPatientId() {
         return patientId;
@@ -44,19 +41,20 @@ public final class DiagnosisDetail {
         return address;
     }
 
-    public List<Diagnosis> getDiagnosis() {
+    public String getDiagnosis() {
         return diagnosis;
     }
 
     public DiagnosisDetail(@JsonProperty("patientId") String patientId, @JsonProperty("fullName") String fullName,
             @JsonProperty("dob") String dob, @JsonProperty("phoneNumber") String phoneNumber,
-            @JsonProperty("address") String address) {
+            @JsonProperty("address") String address, @JsonProperty("diagnosis") String diagnosis) {
         super();
         this.patientId = patientId;
         this.fullName = fullName;
         this.dob = dob;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.diagnosis = diagnosis;
     }
 
 }

@@ -3,33 +3,23 @@ package uit.dessertation.diagnosis;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hyperledger.fabric.contract.annotation.Property;
-
 import com.owlike.genson.annotation.JsonProperty;
 
-import org.hyperledger.fabric.contract.annotation.DataType;
-
-@DataType()
 public class Diagnosis {
-    @Property()
     private final String id;
 
-    @Property()
+    private final String idOrg;
+    
     private final String organization;
 
-    @Property()
     private final String clincian;
 
-    @Property()
     private String createdAt;
 
-    @Property()
     private final List<Allergy> allergies = new ArrayList<Allergy>();
 
-    @Property()
     private final List<String> symptons = new ArrayList<>();
 
-    @Property()
     private final List<Medication> medications = new ArrayList<>();
 
     public String getCreatedAt() {
@@ -63,11 +53,16 @@ public class Diagnosis {
     public List<Medication> getMedications() {
         return medications;
     }
+    
+    public String getIdOrg() {
+        return this.idOrg;
+    }
 
-    public Diagnosis(@JsonProperty("id") String id, @JsonProperty("organization") String organization,
+    public Diagnosis(@JsonProperty("id") String id, @JsonProperty("idOrg") String idOrg, @JsonProperty("organization") String organization,
             @JsonProperty("clinician") String clincian, @JsonProperty("createdAt") String createdAt) {
         super();
         this.id = id;
+        this.idOrg = idOrg;
         this.organization = organization;
         this.clincian = clincian;
         this.createdAt = createdAt;

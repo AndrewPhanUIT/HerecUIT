@@ -13,7 +13,7 @@ CC_SRC_PATH=/opt/gopath/src/HerecUIT/chaincode/java
 rm -rf ./hfc-key-store
 
 # launch network; create channel and join peer to channel
-cd ./fabric-network
+cd fabric-network
 echo y | ./herec.sh down
 echo y | ./herec.sh up -a -n -s couchdb
 
@@ -27,6 +27,9 @@ ORG2_MSPCONFIGPATH=${CONFIG_ROOT}/crypto/peerOrganizations/quan12.herec.uit/user
 ORG2_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/quan12.herec.uit/peers/peer0.quan12.herec.uit/tls/ca.crt
 ORDERER_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/ordererOrganizations/herec.uit/orderers/orderer.herec.uit/msp/tlscacerts/tlsca.herec.uit-cert.pem
 set -x
+
+echo "sleep 15s"
+sleep 15
 
 echo "Create new channel"
 docker exec \
@@ -107,6 +110,8 @@ docker exec \
     --peerAddresses peer0.client.herec.uit:7051 \
     --tlsRootCertFiles /opt/gopath/src/HerecUIT/hyperledger/fabric/peer/crypto/peerOrganizations/client.herec.uit/peers/peer0.client.herec.uit/tls/ca.crt
 
+echo "Sleep 10s before submit transaction"
+sleep 10
 
 echo "Submitting initLedger transaction to smart contract on herecchannel"
 docker exec \
@@ -118,7 +123,7 @@ docker exec \
   peer chaincode invoke \
     -o orderer.herec.uit:7050 \
     -C herecchannel \
-    -n fabcar \
+    -n diagnosis \
     -c '{"function":"initLedger","Args":[]}' \
     --waitForEvent \
     --tls \
