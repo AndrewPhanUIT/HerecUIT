@@ -1,7 +1,6 @@
 package uit.herec.hyperledger.Impl;
 
 import java.io.BufferedReader;
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,19 +16,23 @@ import uit.herec.hyperledger.Cmd;
 
 @Service
 public class CmdImpl implements Cmd {
-
     private final static Logger logger = LoggerFactory.getLogger(CmdImpl.class);
-
+    
     @Override
     public void startServer() {
         logger.info("---- START HYPERLEDGER FABRIC NETWORK");
-        Path fabricNetwork = Paths.get("");
         String rootSystem = System.getProperty("user.dir");
+        Path path = Paths.get(rootSystem);
+        try {
+            this.exec(path, "./startFabric.sh", rootSystem);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
         logger.info("---- END  HYPERLEDGER FABRIC NETWORK");
     }
 
     public static void main(String[] args) {
-
+        new CmdImpl().startServer();
     }
 
     @Override
@@ -49,8 +52,9 @@ public class CmdImpl implements Cmd {
                 logger.error("exec - " + line);
             }
         }
-        if (exitCode == 0)
-            logger.error("Cant exec with cmdArgs: " + cmdString, " - dir: " + dir.toString());
+        if (exitCode != 0)
+            logger.error("Cant exec with cmdArgs: " + cmdString + " - dir: " + dir);
+        else logger.info("Started fabric network");
     }
 
     private void exec(String... cmdArgs) throws IOException, InterruptedException {

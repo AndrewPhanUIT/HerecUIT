@@ -20,7 +20,7 @@ import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.owlike.genson.Genson;
 
-@Contract(name = "Diagnosis", info = @Info(title = "Diagnosis contract", description = "The hyperlegendary Diagnosis contract", version = "0.0.1", license = @License(name = "Apache 2.0 License", url = "http://www.apache.org/licenses/LICENSE-2.0.html")))
+@Contract(name = "Diagnosis", info = @Info(title = "Diagnosis contract", description = "The hypeledger Diagnosis contract", version = "0.0.1", license = @License(name = "Apache 2.0 License", url = "http://www.apache.org/licenses/LICENSE-2.0.html")))
 @Default
 public class DiagnosisContract implements ContractInterface {
     private Genson genson = new Genson();
@@ -42,6 +42,13 @@ public class DiagnosisContract implements ContractInterface {
                 "Phường Tân Thới Nhất, Quận 12, Thành phố Hồ Chí Minh", gson.toJson(lstDiagnosis));
         String diagnosisState = genson.serialize(detail);
         stub.putStringState("DIG001", diagnosisState);
+        
+        Appointment appointment = new Appointment("A001", "ORG001", "Bệnh viện quận 12", "Vũ Mạnh Cường@DT001", "20200101", "20200120");
+        Appointment[] lstAppointments = { appointment };
+        AppointmentDetail appDetail = new AppointmentDetail("PT001", "Andrew Phan", "19971226", "0783550324",
+                "Phường Tân Thới Nhất, Quận 12, Thành phố Hồ Chí Minh", gson.toJson(lstAppointments));
+        String appointmentState = genson.serialize(appDetail);
+        stub.putStringState("APM001", appointmentState);
     }
 
     @Transaction()
@@ -54,9 +61,6 @@ public class DiagnosisContract implements ContractInterface {
         }
         DiagnosisDetail detail = genson.deserialize(diagnosisState, DiagnosisDetail.class);
         return detail;
-    }
-
-    public static void main(String[] args) {
     }
 
     /**
@@ -84,7 +88,7 @@ public class DiagnosisContract implements ContractInterface {
      * @return
      */
     @Transaction()
-    public DiagnosisDetail addNewRecord(Context ctx, final String patientInfo, final String diagnosis) {
+    public DiagnosisDetail addNewDiagnosisRecord(Context ctx, final String patientInfo, final String diagnosis) {
         ChaincodeStub stub = ctx.getStub();
         DiagnosisDetail detail = genson.deserialize(patientInfo, DiagnosisDetail.class);
         String keyPatientId = queryDiagnosisByPatientId(ctx, detail.getPatientId());
@@ -96,8 +100,8 @@ public class DiagnosisContract implements ContractInterface {
             DiagnosisDetail newDiagnosisDetail = DiagnosisDetail.addDiagnosis(diagnosisDetail, diagnosis);
             String key = !"".equals(keyPatientId) ? keyPatientId : keyPhoneNumber;
             stub.putStringState(key, genson.serialize(newDiagnosisDetail));
+            return newDiagnosisDetail;
         }
-        return null;
     }
 
     @Transaction()
@@ -130,6 +134,7 @@ public class DiagnosisContract implements ContractInterface {
         return "";
     }
     
+    @Transaction()
     public int countDiagnosisInChannel(Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "DIG001";
@@ -143,10 +148,105 @@ public class DiagnosisContract implements ContractInterface {
     }
 
     @Transaction()
-    public List<String> getStateHistoryByKey(Context ctx, String key) {
+    public QueryResultsIterator<KeyModification> getStateHistoryByKey(Context ctx, String key) {
         ChaincodeStub stub = ctx.getStub();
-        List<String> results = new ArrayList<String>();
         QueryResultsIterator<KeyModification> history = stub.getHistoryForKey(key);
-        return results;
+        return history;
+    }
+    
+    @Transaction()
+    public DiagnosisDetail queryAllDiagnosisByPhoneNumber(Context ctx, String phoneNumber) {
+        ChaincodeStub stub = ctx.getStub();
+        final String startKey = "DIG001";
+        final String endKey = "DIG999";
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
+        for (KeyValue result : results) {
+            DiagnosisDetail detail = genson.deserialize(result.getStringValue(), DiagnosisDetail.class);
+            if (Objects.equal(phoneNumber, detail.getPhoneNumber())) {
+                return detail;
+            }
+        }
+        return null;
+    }
+    
+    @Transaction()
+    public AppointmentDetail queryAppointment(Context ctx, String key) {
+        ChaincodeStub stub = ctx.getStub();
+        String appointmentState = stub.getStringState(key);
+        if (appointmentState.isEmpty()) {
+            String errorMess = String.format("Appointment %s does not exist", key);
+            throw new ChaincodeException(errorMess);
+        }
+        AppointmentDetail detail = genson.deserialize(appointmentState, AppointmentDetail.class);
+        return detail;
+    }
+    
+    @Transaction()
+    public AppointmentDetail createAppointment(Context ctx, final String patientInfo, final String appointment) {
+        ChaincodeStub stub = ctx.getStub();
+        int currentIndex = this.countAppointmentInChannel(ctx) + 1;
+        AppointmentDetail appointmentDetail = genson.deserialize(patientInfo, AppointmentDetail.class);
+        String[] lstAppointments = {appointment};
+        AppointmentDetail newAppointmentsDetail = AppointmentDetail.create(appointmentDetail, genson.serialize(lstAppointments));
+        stub.putStringState(String.format("APM%30d", currentIndex), genson.serialize(newAppointmentsDetail));
+        return newAppointmentsDetail;
+    }
+    
+    @Transaction()
+    public int countAppointmentInChannel(Context ctx) {
+        ChaincodeStub stub = ctx.getStub();
+        final String startKey = "APM001";
+        final String endKey = "APM999";
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
+        int count = 0;
+        for (KeyValue result : results) {
+           count++;
+        }
+        return count;
+    }
+    
+    @Transaction()
+    public AppointmentDetail addNewAppointmentRecord(Context ctx, final String patientInfo, final String appointment) {
+        ChaincodeStub stub = ctx.getStub();
+        AppointmentDetail detail = genson.deserialize(patientInfo, AppointmentDetail.class);
+        String keyPhoneNumber = this.queryAppointmentByPatientPhoneNumber(ctx, detail.getPhoneNumber());
+        if("".equals(keyPhoneNumber)) {
+            return createAppointment(ctx, patientInfo, appointment);
+        }else {
+            AppointmentDetail appointmentDetail = genson.deserialize(patientInfo, AppointmentDetail.class);
+            AppointmentDetail newAppointmentDetail = AppointmentDetail.addAppointment(appointmentDetail, appointment);
+            stub.putStringState(keyPhoneNumber, genson.serialize(newAppointmentDetail));
+            return newAppointmentDetail;
+        }
+    }
+    
+    @Transaction()
+    public String queryAppointmentByPatientPhoneNumber(Context ctx, String phoneNumber) {
+        ChaincodeStub stub = ctx.getStub();
+        final String startKey = "APM001";
+        final String endKey = "APM999";
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
+        for (KeyValue result : results) {
+            AppointmentDetail detail = genson.deserialize(result.getStringValue(), AppointmentDetail.class);
+            if (Objects.equal(phoneNumber, detail.getPhoneNumber())) {
+                return result.getKey();
+            }
+        }
+        return "";
+    }
+    
+    @Transaction()
+    public AppointmentDetail queryAllAppointmentByPhoneNumber(Context ctx, String phoneNumber) {
+        ChaincodeStub stub = ctx.getStub();
+        final String startKey = "APM001";
+        final String endKey = "APM999";
+        QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
+        for (KeyValue result : results) {
+            AppointmentDetail detail = genson.deserialize(result.getStringValue(), AppointmentDetail.class);
+            if (Objects.equal(phoneNumber, detail.getPhoneNumber())) {
+                return detail;
+            }
+        }
+        return null;
     }
 }

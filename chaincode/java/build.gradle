@@ -9,7 +9,7 @@ plugins {
     id 'jacoco'
 }
 
-group 'org.hyperledger.fabric.samples'
+group 'org.hyperledger.fabric.herec'
 version '1.0-SNAPSHOT'
 
 dependencies {
