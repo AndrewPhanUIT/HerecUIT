@@ -100,6 +100,8 @@ docker exec \
 echo "Sleep 10s before submit transaction"
 sleep 10
 
+TEMP="--waitForEvent --tls --cafile /opt/gopath/src/HerecUIT/hyperledger/fabric/peer/crypto/ordererOrganizations/herec.uit/orderers/orderer.herec.uit/msp/tlscacerts/tlsca.herec.uit-cert.pem --peerAddresses peer0.client.herec.uit:7051 --peerAddresses peer0.quan12.herec.uit:9051 --tlsRootCertFiles /opt/gopath/src/HerecUIT/hyperledger/fabric/peer/crypto/peerOrganizations/client.herec.uit/peers/peer0.client.herec.uit/tls/ca.crt --tlsRootCertFiles /opt/gopath/src/HerecUIT/hyperledger/fabric/peer/crypto/peerOrganizations/quan12.herec.uit/peers/peer0.quan12.herec.uit/tls/ca.crt"
+
 echo "Submitting initLedger transaction to smart contract on herecchannel"
 docker exec \
   -e CORE_PEER_LOCALMSPID=ClientMSP \
@@ -111,15 +113,10 @@ docker exec \
     -o orderer.herec.uit:7050 \
     -C herecchannel \
     -n diagnosis \
-    -c '{"function":"initLedger","Args":[]}' \
-    --waitForEvent \
-    --tls \
-    --cafile /opt/gopath/src/HerecUIT/hyperledger/fabric/peer/crypto/ordererOrganizations/herec.uit/orderers/orderer.herec.uit/msp/tlscacerts/tlsca.herec.uit-cert.pem \
-    --peerAddresses peer0.client.herec.uit:7051 \
-    --peerAddresses peer0.quan12.herec.uit:9051 \
-    --tlsRootCertFiles /opt/gopath/src/HerecUIT/hyperledger/fabric/peer/crypto/peerOrganizations/client.herec.uit/peers/peer0.client.herec.uit/tls/ca.crt \
-    --tlsRootCertFiles /opt/gopath/src/HerecUIT/hyperledger/fabric/peer/crypto/peerOrganizations/quan12.herec.uit/peers/peer0.quan12.herec.uit/tls/ca.crt 
+    -c '{"function":"initLedger","Args":[]}' $TEMP
+     
 set +x
+
 
 cat <<EOF
 EOF

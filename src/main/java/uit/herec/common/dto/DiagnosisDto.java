@@ -4,27 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiagnosisDto {
-    private String id;
-
-    private String idOrg;
-
     private String organization;
 
     private String clincian;
 
     private String createdAt;
 
-    private List<AllergyDto> allergies = new ArrayList<>();
+    private List<AllergyDto> allergies = new ArrayList<AllergyDto>();
 
     private List<String> symptons = new ArrayList<>();
 
     private List<MedicationDto> medications = new ArrayList<>();
 
-    public DiagnosisDto(String id, String idOrg, String organization, String clincian, String createdAt,
-            List<AllergyDto> allergies, List<String> symptons, List<MedicationDto> medications) {
+    public DiagnosisDto(String organization, String clincian, String createdAt, List<AllergyDto> allergies,
+            List<String> symptons, List<MedicationDto> medications) {
         super();
-        this.id = id;
-        this.idOrg = idOrg;
         this.organization = organization;
         this.clincian = clincian;
         this.createdAt = createdAt;
@@ -33,24 +27,11 @@ public class DiagnosisDto {
         this.medications = medications;
     }
 
-    public DiagnosisDto() {
+    public DiagnosisDto(String organization, String clincian, String createdAt) {
         super();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getIdOrg() {
-        return idOrg;
-    }
-
-    public void setIdOrg(String idOrg) {
-        this.idOrg = idOrg;
+        this.organization = organization;
+        this.clincian = clincian;
+        this.createdAt = createdAt;
     }
 
     public String getOrganization() {
@@ -100,13 +81,7 @@ public class DiagnosisDto {
     public void setMedications(List<MedicationDto> medications) {
         this.medications = medications;
     }
-
-    @Override
-    public String toString() {
-        return "DiagnosisDto [id=" + id + ", idOrg=" + idOrg + ", organization=" + organization + ", clincian="
-                + clincian + ", createdAt=" + createdAt + ", allergies=" + allergies + ", symptons=" + symptons
-                + ", medications=" + medications + "]";
-    }
-
+    
+    
     
 }

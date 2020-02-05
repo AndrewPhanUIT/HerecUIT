@@ -23,13 +23,15 @@ import javax.persistence.Table;
 @Table(name = "organization", catalog = "herec_uit")
 public class Organization implements java.io.Serializable {
 
+    private static final long serialVersionUID = -3509770931733188106L;
     private Integer id;
     private String name;
     private String hyperledgerName;
+    private String port;
     private Set<AppUser> appUsers = new HashSet<AppUser>(0);
     private Set<Appointment> appointments = new HashSet<Appointment>(0);
     private Set<Diagnosis> diagnosises = new HashSet<Diagnosis>(0);
-
+    
     public Organization() {
     }
 
@@ -76,7 +78,7 @@ public class Organization implements java.io.Serializable {
         this.hyperledgerName = hyperledgerName;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "permission", catalog = "herec_uit", joinColumns = {
             @JoinColumn(name = "id_org", nullable = false, updatable = false) }, inverseJoinColumns = {
                     @JoinColumn(name = "id_user", nullable = false, updatable = false) })
@@ -88,7 +90,7 @@ public class Organization implements java.io.Serializable {
         this.appUsers = appUsers;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "organization")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "organization")
     public Set<Appointment> getAppointments() {
         return this.appointments;
     }
@@ -106,4 +108,14 @@ public class Organization implements java.io.Serializable {
         this.diagnosises = diagnosises;
     }
 
+    public String getPort() {
+        return port;
+    }
+
+    @Column(name = "port")
+    public void setPort(String port) {
+        this.port = port;
+    }
+
+    
 }

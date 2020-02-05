@@ -3,52 +3,31 @@ package uit.herec.common.dto;
 import java.io.Serializable;
 
 public class AppointmentDetailDto implements Serializable {
-    private String patientId;
-    private String fullName;
-    private String dob;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5352862306675151611L;
+    private String key;
     private String phoneNumber;
-    private String address;
-    private String appointments;
-    private AppointmentDto[] appointmentDtos;
+    private AppointmentDto appointment;
 
-    public AppointmentDetailDto(String patientId, String fullName, String dob, String phoneNumber, String address,
-            String appointments, AppointmentDto[] appointmentDtos) {
+    public AppointmentDetailDto(String key, String phoneNumber, AppointmentDto appointment) {
         super();
-        this.patientId = patientId;
-        this.fullName = fullName;
-        this.dob = dob;
+        this.key = key;
         this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.appointments = appointments;
-        this.appointmentDtos = appointmentDtos;
+        this.appointment = appointment;
     }
 
     public AppointmentDetailDto() {
         super();
     }
 
-    public String getPatientId() {
-        return patientId;
+    public String getKey() {
+        return key;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getPhoneNumber() {
@@ -59,28 +38,12 @@ public class AppointmentDetailDto implements Serializable {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getAddress() {
-        return address;
+    public AppointmentDto getAppointment() {
+        return appointment;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getAppointments() {
-        return appointments;
-    }
-
-    public void setAppointments(String appointments) {
-        this.appointments = appointments;
-    }
-
-    public AppointmentDto[] getAppointmentDtos() {
-        return appointmentDtos;
-    }
-
-    public void setAppointmentDtos(AppointmentDto[] appointmentDtos) {
-        this.appointmentDtos = appointmentDtos;
+    public void setAppointment(AppointmentDto appointment) {
+        this.appointment = appointment;
     }
 
 }

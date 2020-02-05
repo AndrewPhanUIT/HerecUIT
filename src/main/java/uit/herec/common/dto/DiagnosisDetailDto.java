@@ -1,52 +1,29 @@
 package uit.herec.common.dto;
 
 public class DiagnosisDetailDto {
-    private String patientId;
-    private String fullName;
-    private String dob;
+    private String key;
     private String phoneNumber;
-    private String address;
-    private DiagnosisDto[] diagnosisDtos;
-    private String diagnosis;
+    private DiagnosisDto diagnosis;
 
-    public DiagnosisDetailDto(String patientId, String fullName, String dob, String phoneNumber, String address,
-            DiagnosisDto[] diagnosisDtos, String diagnosis) {
+    public DiagnosisDetailDto(String key, String phoneNumber, DiagnosisDto diagnosis) {
         super();
-        this.patientId = patientId;
-        this.fullName = fullName;
-        this.dob = dob;
+        this.key = key;
         this.phoneNumber = phoneNumber;
-        this.address = address;
-        this.diagnosisDtos = diagnosisDtos;
         this.diagnosis = diagnosis;
     }
-
+    
     public DiagnosisDetailDto() {
         super();
     }
 
-    public String getPatientId() {
-        return patientId;
+
+
+    public String getKey() {
+        return key;
     }
 
-    public void setPatientId(String patientId) {
-        this.patientId = patientId;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getDob() {
-        return dob;
-    }
-
-    public void setDob(String dob) {
-        this.dob = dob;
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getPhoneNumber() {
@@ -57,35 +34,12 @@ public class DiagnosisDetailDto {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public DiagnosisDto[] getDiagnosisDtos() {
-        return diagnosisDtos;
-    }
-
-    public void setDiagnosisDtos(DiagnosisDto[] diagnosisDtos) {
-        this.diagnosisDtos = diagnosisDtos;
-    }
-
-    public String getDiagnosis() {
+    public DiagnosisDto getDiagnosis() {
         return diagnosis;
     }
 
-    public void setDiagnosis(String diagnosis) {
+    public void setDiagnosis(DiagnosisDto diagnosis) {
         this.diagnosis = diagnosis;
     }
 
-    @Override
-    public String toString() {
-        return "DiagnosisDetailDto [patientId=" + patientId + ", fullName=" + fullName + ", dob=" + dob
-                + ", phoneNumber=" + phoneNumber + ", address=" + address + ", diagnosis=" + diagnosis + "]";
-    }
-
-    
 }

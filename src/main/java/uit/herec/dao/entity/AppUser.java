@@ -37,6 +37,8 @@ public class AppUser extends DateAudit {
     private Date dob;
     private String password;
     private String hyperledgerName;
+    private String peerName;
+    private String port;
     private Set<Organization> organizations = new HashSet<Organization>(0);
     private Set<Appointment> appointments = new HashSet<Appointment>(0);
     private Set<Diagnosis> diagnosises = new HashSet<Diagnosis>(0);
@@ -172,5 +174,25 @@ public class AppUser extends DateAudit {
     public void setDiagnosises(Set<Diagnosis> diagnosises) {
         this.diagnosises = diagnosises;
     }
+
+    public String getPeerName() {
+        return peerName;
+    }
+
+    @Column(name = "peer_name")
+    public void setPeerName(String peerName) {
+        this.peerName = peerName;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    @Column(name = "peer_port")
+    public void setPort(String port) {
+        this.port = port;
+    }
+    
+    
 
 }

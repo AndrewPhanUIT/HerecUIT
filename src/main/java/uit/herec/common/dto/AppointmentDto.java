@@ -1,10 +1,6 @@
 package uit.herec.common.dto;
 
 public class AppointmentDto {
-    private String id;
-
-    private String idOrg;
-
     private String organization;
 
     private String clincian;
@@ -13,11 +9,8 @@ public class AppointmentDto {
 
     private String appointmentDate;
 
-    public AppointmentDto(String id, String idOrg, String organization, String clincian, String createdAt,
-            String appointmentDate) {
+    public AppointmentDto(String organization, String clincian, String createdAt, String appointmentDate) {
         super();
-        this.id = id;
-        this.idOrg = idOrg;
         this.organization = organization;
         this.clincian = clincian;
         this.createdAt = createdAt;
@@ -26,22 +19,6 @@ public class AppointmentDto {
 
     public AppointmentDto() {
         super();
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getIdOrg() {
-        return idOrg;
-    }
-
-    public void setIdOrg(String idOrg) {
-        this.idOrg = idOrg;
     }
 
     public String getOrganization() {
