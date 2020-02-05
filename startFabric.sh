@@ -34,47 +34,26 @@ ORG2_MSPCONFIGPATH=${CONFIG_ROOT}/crypto/peerOrganizations/quan12.herec.uit/user
 ORG2_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/quan12.herec.uit/peers/peer0.quan12.herec.uit/tls/ca.crt
 ORDERER_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/ordererOrganizations/herec.uit/orderers/orderer.herec.uit/msp/tlscacerts/tlsca.herec.uit-cert.pem
 set -x
-
 echo "sleep 15s"
 sleep 15
-
-echo "Create new channel"
-docker exec \
-  -e "CORE_PEER_LOCALMSPID=ClientMSP" \
-  -e "CORE_PEER_ADDRESS=peer0.client.herec.uit:7051" \
-  -e "CORE_PEER_MSPCONFIGPATH=${ORG1_MSPCONFIGPATH}" \
-  -e "CORE_PEER_TLS_ROOTCERT_FILE=${ORG1_TLS_ROOTCERT_FILE}" \
-  cli \
-  peer channel create \
-    -o orderer.herec.uit:7050 \
-    -c $CHANNEL_NAME \
-    -f ./channel-artifacts/herecchannel.tx \
-    --tls --cafile ${ORDERER_TLS_ROOTCERT_FILE} 
-
-echo "Join Client to channel"
-docker exec \
-  -e "CORE_PEER_LOCALMSPID=ClientMSP" \
-  -e "CORE_PEER_ADDRESS=peer0.client.herec.uit:7051" \
-  -e "CORE_PEER_MSPCONFIGPATH=${ORG1_MSPCONFIGPATH}" \
-  -e "CORE_PEER_TLS_ROOTCERT_FILE=${ORG1_TLS_ROOTCERT_FILE}" \
-  cli \
-  peer channel join \
-    -b herecchannel.block
-
-echo "Join Quan12 to channel"
-docker exec \
-  -e "CORE_PEER_LOCALMSPID=Quan12MSP" \
-  -e "CORE_PEER_ADDRESS=peer0.quan12.herec.uit:9051" \
-  -e "CORE_PEER_MSPCONFIGPATH=${ORG2_MSPCONFIGPATH}" \
-  -e "CORE_PEER_TLS_ROOTCERT_FILE=${ORG2_TLS_ROOTCERT_FILE}" \
-  cli \
-  peer channel join \
-    -b herecchannel.block
 
 echo "Installing smart contract on peer0.client.herec.uit"
 docker exec \
   -e CORE_PEER_LOCALMSPID=ClientMSP \
   -e CORE_PEER_ADDRESS=peer0.client.herec.uit:7051 \
+  -e CORE_PEER_MSPCONFIGPATH=${ORG1_MSPCONFIGPATH} \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=${ORG1_TLS_ROOTCERT_FILE} \
+  cli \
+  peer chaincode install \
+    -n diagnosis \
+    -v 1.0 \
+    -p "$CC_SRC_PATH" \
+    -l "$CC_RUNTIME_LANGUAGE"
+
+echo "Installing smart contract on peer1.client.herec.uit"
+docker exec \
+  -e CORE_PEER_LOCALMSPID=ClientMSP \
+  -e CORE_PEER_ADDRESS=peer1.client.herec.uit:8051 \
   -e CORE_PEER_MSPCONFIGPATH=${ORG1_MSPCONFIGPATH} \
   -e CORE_PEER_TLS_ROOTCERT_FILE=${ORG1_TLS_ROOTCERT_FILE} \
   cli \
@@ -96,6 +75,7 @@ docker exec \
     -v 1.0 \
     -p "$CC_SRC_PATH" \
     -l "$CC_RUNTIME_LANGUAGE"
+
 
 echo "Instantiating smart contract on herecchannel"
 docker exec \

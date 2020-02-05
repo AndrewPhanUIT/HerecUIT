@@ -92,40 +92,26 @@ function networkUp() {
     replacePrivateKey
     generateChannelArtifacts
   fi
-  COMPOSE_FILES="-f ${COMPOSE_FILE}"
+
   if [ "${CERTIFICATE_AUTHORITIES}" == "true" ]; then
     COMPOSE_FILES="${COMPOSE_FILES} -f ${COMPOSE_FILE_CA}"
     export BYFN_CA1_PRIVATE_KEY=$(cd crypto-config/peerOrganizations/client.herec.uit/ca && ls *_sk)
     export BYFN_CA2_PRIVATE_KEY=$(cd crypto-config/peerOrganizations/quan12.herec.uit/ca && ls *_sk)
   fi
-  if [ "${CONSENSUS_TYPE}" == "kafka" ]; then
-    COMPOSE_FILES="${COMPOSE_FILES} -f ${COMPOSE_FILE_KAFKA}"
-  elif [ "${CONSENSUS_TYPE}" == "etcdraft" ]; then
-    COMPOSE_FILES="${COMPOSE_FILES} -f ${COMPOSE_FILE_RAFT2}"
-  fi
-  if [ "${IF_COUCHDB}" == "couchdb" ]; then
-    COMPOSE_FILES="${COMPOSE_FILES} -f ${COMPOSE_FILE_COUCH}"
-  fi
-  IMAGE_TAG=$IMAGETAG docker-compose ${COMPOSE_FILES} up -d 2>&1
+
+# -f docker-compose-cli.yaml -f docker-compose-ca.yaml -f docker-compose-couch.yaml
+  IMAGE_TAG=$IMAGETAG docker-compose -f docker-compose-cli-herec.yaml -f docker-compose-ca-herec.yaml -f docker-compose-couch-herec.yaml -f docker-compose-etcdraft2-herec.yaml up -d 2>&1
+
   docker ps -a
   if [ $? -ne 0 ]; then
     echo "ERROR !!!! Unable to start network"
     exit 1
   fi
-
-  if [ "$CONSENSUS_TYPE" == "kafka" ]; then
-    sleep 1
-    echo "Sleeping 10s to allow $CONSENSUS_TYPE cluster to complete booting"
-    sleep 9
+    docker exec cli scripts/script-herec.sh
+  if [ $? -ne 0 ]; then
+    echo "ERROR !!!! FAILED CREATE NETWORK"
+    exit 1
   fi
-
-  if [ "$CONSENSUS_TYPE" == "etcdraft" ]; then
-    sleep 1
-    echo "Sleeping 15s to allow $CONSENSUS_TYPE cluster to complete booting"
-    sleep 14
-  fi
-
-	docker-compose -f docker-compose-cli-herec.yaml -f docker-compose-etcdraft2-herec.yaml up -d
 }
 
 # Upgrade the network components which are at version 1.3.x to 1.4.x

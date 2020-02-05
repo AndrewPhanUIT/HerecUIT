@@ -74,4 +74,8 @@ public class AppointmentDetail {
         lsAppointments.add(appointment2);
         return new AppointmentDetail(detail.getPatientId(), detail.getFullName(), detail.getDob(), detail.getPhoneNumber(), detail.getAddress(), gson.toJson(lsAppointments));
     }
+    
+    public static void main(String[] args) {
+        System.out.println("Hello");
+    }
 }

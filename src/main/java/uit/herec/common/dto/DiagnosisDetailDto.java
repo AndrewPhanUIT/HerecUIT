@@ -6,18 +6,18 @@ public class DiagnosisDetailDto {
     private String dob;
     private String phoneNumber;
     private String address;
-    private DiagnosisDto diagnosisDto;
+    private DiagnosisDto[] diagnosisDtos;
     private String diagnosis;
 
     public DiagnosisDetailDto(String patientId, String fullName, String dob, String phoneNumber, String address,
-            DiagnosisDto diagnosisDto, String diagnosis) {
+            DiagnosisDto[] diagnosisDtos, String diagnosis) {
         super();
         this.patientId = patientId;
         this.fullName = fullName;
         this.dob = dob;
         this.phoneNumber = phoneNumber;
         this.address = address;
-        this.diagnosisDto = diagnosisDto;
+        this.diagnosisDtos = diagnosisDtos;
         this.diagnosis = diagnosis;
     }
 
@@ -65,12 +65,12 @@ public class DiagnosisDetailDto {
         this.address = address;
     }
 
-    public DiagnosisDto getDiagnosisDto() {
-        return diagnosisDto;
+    public DiagnosisDto[] getDiagnosisDtos() {
+        return diagnosisDtos;
     }
 
-    public void setDiagnosisDto(DiagnosisDto diagnosisDto) {
-        this.diagnosisDto = diagnosisDto;
+    public void setDiagnosisDtos(DiagnosisDto[] diagnosisDtos) {
+        this.diagnosisDtos = diagnosisDtos;
     }
 
     public String getDiagnosis() {
