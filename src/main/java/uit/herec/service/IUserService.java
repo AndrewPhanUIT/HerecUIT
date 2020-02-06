@@ -6,5 +6,6 @@ import uit.herec.common.form.RegisterForm;
 public interface IUserService {
     ApiResponseDto registerPatient(RegisterForm form);
     String getHyperledgerName(String phoneNumber);
+    String getPhoneNumber(String hyperledgerName);
 
 }

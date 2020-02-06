@@ -39,6 +39,7 @@ import uit.herec.common.message.Error;
 import uit.herec.common.message.Success;
 import uit.herec.dao.entity.AppUser;
 import uit.herec.dao.entity.Organization;
+import uit.herec.dao.repository.AppUserRepository;
 import uit.herec.dao.repository.OrganizationRepository;
 import uit.herec.hyperledger.Cmd;
 import uit.herec.hyperledger.Service;
@@ -55,6 +56,9 @@ public class ServiceImpl implements Service{
     @Autowired
     private OrganizationRepository orgRepository;
     
+    @Autowired
+    private AppUserRepository userRepository;
+    
     static {
         System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
     }
@@ -68,7 +72,7 @@ public class ServiceImpl implements Service{
         props.put("allowAllHostNames", "true");
         HFCAClient caClient;
         try {
-            caClient = HFCAClient.createNewInstance(caHost, props);
+            caClient = HFCAClient.createNewInstance("https://localhost:" + caHost, props);
             CryptoSuite cryptoSuite = CryptoSuiteFactory.getDefault().getCryptoSuite();
             caClient.setCryptoSuite(cryptoSuite);
             Wallet wallet = Wallet.createFileSystemWallet(Paths.get(String.format("wallet%s", orgName)));
@@ -94,6 +98,12 @@ public class ServiceImpl implements Service{
         }
         return true;
     }
+    
+    public static void main(String[] args) {
+//        new ServiceImpl().registerUser("user0783550324", "ClientMSP", "Client", "7054", 1);
+        new ServiceImpl().queryAllDiagnosisByPhoneNumber("user0783550324", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
+    }
+    
     @Override
     public boolean registerUser(String username, String msp, String orgName, String caHost, int departmentNumber) {
         try {
@@ -102,7 +112,7 @@ public class ServiceImpl implements Service{
             String pemFile = String.format("%s/fabric-network/crypto-config/peerOrganizations/%s.herec.uit/ca/ca.%s.herec.uit-cert.pem", this.rootPath, orgName.toLowerCase(), orgName.toLowerCase());
             props.put("pemFile", pemFile);
             props.put("allowAllHostNames", "true");
-            HFCAClient caClient = HFCAClient.createNewInstance(caHost, props);
+            HFCAClient caClient = HFCAClient.createNewInstance("https://localhost:" + caHost, props);
             CryptoSuite cryptoSuite = CryptoSuiteFactory.getDefault().getCryptoSuite();
             caClient.setCryptoSuite(cryptoSuite);
             Wallet wallet = Wallet.createFileSystemWallet(Paths.get(String.format("wallet%s", orgName)));
@@ -170,7 +180,7 @@ public class ServiceImpl implements Service{
             Enrollment enrollment = caClient.enroll(username, enrollmentSecret);
             Identity user = Identity.createIdentity(msp, enrollment.getCert(), enrollment.getKey());
             wallet.put(username, user);
-            logger.info(Success.HYPERLEDGER_ENROLL_NEW_USER);
+            logger.info(String.format(Success.HYPERLEDGER_ENROLL_NEW_USER, username));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -249,29 +259,53 @@ public class ServiceImpl implements Service{
         String peerName = "peer0";
         String peerPort = org.getPort();
         String chaincode = "diagnosis";
-        
         List<Object> scriptArgs = new ArrayList<>();
         scriptArgs.add(phoneNumber);
         scriptArgs.add(diagnosisDto);
         ChaincodeScript script = new ChaincodeScript("addNewDiagnosisRecord", scriptArgs);
-        
         List<String> orgs = new ArrayList<>();
         List<String> ports = new ArrayList<>();
         List<String> peers = new ArrayList<>();
-        
-        orgs.add(orgName);
-        ports.add(peerPort);
-        peers.add(peerName);
-
-        
-//        return this.cmd.invokeChaincode(orgName, peerName, peerPort, channel, chaincode, script, orgs, ports, peers);
-        return false;
+        AppUser appUser = this.userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new BadRequestException(String.format(Error.PHONE_NUMBER_NOT_FOUND, phoneNumber)));
+        orgs.add("Client");
+        ports.add(appUser.getPort());
+        peers.add(appUser.getPeerName());
+        Set<Organization> organizations = appUser.getOrganizations();
+        for(Organization organization : organizations) {
+            orgs.add(organization.getHyperledgerName());
+            ports.add(organization.getPort());
+            peers.add("peer0");
+        }
+        return this.cmd.invokeChaincode(orgName, peerName, peerPort, channel, chaincode, script, orgs, ports, peers);
     }
     
     @Override
-    public boolean addNewAppoiment(String msp, String orgName, String caHost, String channel, String chaincode,
-            AppointmentDetailDto dto, AppointmentDto appointmentDto) {
-        return true;
+    public boolean addNewAppoiment(String orgName, String channel, String phoneNumber, AppointmentDto appointmentDto) {
+        Organization org = this.orgRepository.findByHyperledgerNameIgnoreCase(orgName)
+                .orElseThrow(() -> new BadRequestException(String.format(Error.ORG_NAME_IS_NOT_FOUND, orgName)));
+        String peerName = "peer0";
+        String peerPort = org.getPort();
+        String chaincode = "diagnosis";
+        List<Object> scriptArgs = new ArrayList<>();
+        scriptArgs.add(phoneNumber);
+        scriptArgs.add(appointmentDto);
+        ChaincodeScript script = new ChaincodeScript("addNewAppointmentRecord", scriptArgs);
+        List<String> orgs = new ArrayList<>();
+        List<String> ports = new ArrayList<>();
+        List<String> peers = new ArrayList<>();
+        AppUser appUser = this.userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new BadRequestException(String.format(Error.PHONE_NUMBER_NOT_FOUND, phoneNumber)));
+        orgs.add("Client");
+        ports.add(appUser.getPort());
+        peers.add(appUser.getPeerName());
+        Set<Organization> organizations = appUser.getOrganizations();
+        for(Organization organization : organizations) {
+            orgs.add(organization.getHyperledgerName());
+            ports.add(organization.getPort());
+            peers.add("peer0");
+        }
+        return this.cmd.invokeChaincode(orgName, peerName, peerPort, channel, chaincode, script, orgs, ports, peers);
     }
     
     

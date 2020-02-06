@@ -47,4 +47,11 @@ public class UserServiceImpl implements IUserService{
         return user.getHyperledgerName();
     }
 
+    @Override
+    public String getPhoneNumber(String hyperledgerName) {
+        AppUser user = this.userRepository.findByHyperledgerName(hyperledgerName)
+                .orElseThrow(()-> new BadRequestException(String.format(Error.HYPERLEDGER_NAME_NOT_FOUND, hyperledgerName)));
+        return user.getPhoneNumber();
+    }
+
 }

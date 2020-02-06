@@ -145,7 +145,7 @@ public class AppUser extends DateAudit {
         this.hyperledgerName = hyperledgerName;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "permission", catalog = "herec_uit", joinColumns = {
             @JoinColumn(name = "id_user", nullable = false, updatable = false) }, inverseJoinColumns = {
                     @JoinColumn(name = "id_org", nullable = false, updatable = false) })

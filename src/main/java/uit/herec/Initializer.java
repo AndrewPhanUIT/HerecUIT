@@ -49,16 +49,16 @@ public class Initializer{
     public void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTF-8"));
 //        this.hyperledgerCmd.startServer();
-        this.removePrevData();
-        this.initNewData();
+//        this.removePrevData();
+//        this.initNewData();
     }
     
     private void removePrevData() {
         String rootPath = System.getProperty("user.dir");
         File clientWallet = new File(rootPath + "/walletClient");
         Utils.deleteFolder(clientWallet);
-        File quan12Wallet = new File(rootPath + "/walletQuan12");
-        Utils.deleteFolder(quan12Wallet);
+//        File quan12Wallet = new File(rootPath + "/walletQuan12");
+//        Utils.deleteFolder(quan12Wallet);
         
         this.userRepository.deleteAll();
         this.appointmentRepository.deleteAll();
@@ -69,7 +69,6 @@ public class Initializer{
     
     private void initNewData() {
         this.hyperledgerService.enrollAdmin("ClientMSP", "Client", this.clientPort);
-
     }
     
 }

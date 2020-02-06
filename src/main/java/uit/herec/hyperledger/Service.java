@@ -13,5 +13,5 @@ public interface Service {
     List<DiagnosisDetailDto> queryAllDiagnosisByPhoneNumber(String username, String msp, String orgName, String channel, String chaincode, String phoneNumber);
     List<AppointmentDetailDto> queryAllAppointmentsByPhoneNumber(String username, String msp, String orgName, String channel, String chaincode, String phoneNumber);
     boolean addNewDiagnosis(String orgName, String channel, String phoneNumber, DiagnosisDto diagnosisDto);
-    boolean addNewAppoiment(String msp, String orgName, String caHost, String channel, String chaincode, AppointmentDetailDto dto, AppointmentDto appointmentDto);
+    boolean addNewAppoiment(String orgName, String channel, String phoneNumber, AppointmentDto appointmentDto);
 }

@@ -5,4 +5,5 @@ public final class APIConstants {
     public final static String LOGIN = "/login";
     public final static String REGISTER = "/register";
     
+    public final static String HYPERLEDGER_API = "/api/hyperledger";
 }
