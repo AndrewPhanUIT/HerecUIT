@@ -22,7 +22,13 @@ import javax.persistence.TemporalType;
 @Table(name = "appointment", catalog = "herec_uit")
 public class Appointment implements java.io.Serializable {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6117431307427982596L;
     private Integer id;
+    private String key;
+    private String clinician;
     private AppUser appUser;
     private Organization organization;
     private Date createdAt;
@@ -89,5 +95,25 @@ public class Appointment implements java.io.Serializable {
     public void setAppointmentTime(Date appointmentTime) {
         this.appointmentTime = appointmentTime;
     }
+
+    @Column(name = "key")
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    @Column(name = "clinician")
+    public String getClinician() {
+        return clinician;
+    }
+
+    public void setClinician(String clinician) {
+        this.clinician = clinician;
+    }
+    
+    
 
 }

@@ -25,7 +25,9 @@ import javax.persistence.TemporalType;
 @Table(name = "diagnosis", catalog = "herec_uit")
 public class Diagnosis implements java.io.Serializable {
 
+    private static final long serialVersionUID = -2310947025140038251L;
     private Integer id;
+    private String key;
     private AppUser appUser;
     private Organization organization;
     private String clinician;
@@ -125,5 +127,16 @@ public class Diagnosis implements java.io.Serializable {
     public void setMedications(Set<Medication> medications) {
         this.medications = medications;
     }
+
+    @Column(name = "key")
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+    
+    
 
 }

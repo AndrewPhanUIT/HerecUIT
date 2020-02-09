@@ -39,14 +39,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 			if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
 				String phoneNumber = tokenProvider.getPhoneNumberFromJWT(jwt);
-
 				UserDetails userDetails = this.customUserDetailsService.loadUserByPhoneNumber(phoneNumber);
-
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
-
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
 		} catch (Exception ex) {
@@ -57,10 +53,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	private String getJwtFromRequest(HttpServletRequest request) {
-		String jobcentralToken = request.getHeader("Authorization");
-
-		if (StringUtils.hasText(jobcentralToken) && jobcentralToken.startsWith(Constant.TOKEN_TYPE + Constant.SPACE)) {
-			return jobcentralToken.substring(7, jobcentralToken.length());
+		String token = request.getHeader("Authorization");
+		if (StringUtils.hasText(token) && token.startsWith(Constant.TOKEN_TYPE + Constant.SPACE)) {
+			return token.replace(Constant.TOKEN_TYPE + Constant.SPACE, "");
 		}
 		return "";
 	}

@@ -30,6 +30,7 @@ export COMPOSE_PROJECT_NAME=fabric-network
 CONFIG_ROOT=/opt/gopath/src/HerecUIT/hyperledger/fabric/peer
 ORG1_MSPCONFIGPATH=${CONFIG_ROOT}/crypto/peerOrganizations/client.herec.uit/users/Admin@client.herec.uit/msp
 ORG1_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/client.herec.uit/peers/peer0.client.herec.uit/tls/ca.crt
+ORG1_PEER1_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/client.herec.uit/peers/peer1.client.herec.uit/tls/ca.crt
 ORG2_MSPCONFIGPATH=${CONFIG_ROOT}/crypto/peerOrganizations/quan12.herec.uit/users/Admin@quan12.herec.uit/msp
 ORG2_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/quan12.herec.uit/peers/peer0.quan12.herec.uit/tls/ca.crt
 ORDERER_TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/ordererOrganizations/herec.uit/orderers/orderer.herec.uit/msp/tlscacerts/tlsca.herec.uit-cert.pem
@@ -55,7 +56,7 @@ docker exec \
   -e CORE_PEER_LOCALMSPID=ClientMSP \
   -e CORE_PEER_ADDRESS=peer1.client.herec.uit:8051 \
   -e CORE_PEER_MSPCONFIGPATH=${ORG1_MSPCONFIGPATH} \
-  -e CORE_PEER_TLS_ROOTCERT_FILE=${ORG1_TLS_ROOTCERT_FILE} \
+  -e CORE_PEER_TLS_ROOTCERT_FILE=${ORG1_PEER1_TLS_ROOTCERT_FILE} \
   cli \
   peer chaincode install \
     -n diagnosis \

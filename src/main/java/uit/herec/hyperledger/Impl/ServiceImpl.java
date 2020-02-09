@@ -100,8 +100,11 @@ public class ServiceImpl implements Service{
     }
     
     public static void main(String[] args) {
-//        new ServiceImpl().registerUser("user0783550324", "ClientMSP", "Client", "7054", 1);
-        new ServiceImpl().queryAllDiagnosisByPhoneNumber("user0783550324", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
+//        new ServiceImpl().enrollAdmin("ClientMSP", "Client", "7054");
+//        new ServiceImpl().registerUser("andrew", "ClientMSP", "Client", "7054", 1);
+//        new ServiceImpl().queryAllDiagnosisByPhoneNumber("andrew", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
+        new ServiceImpl().queryAllAppointmentsByPhoneNumber("andrew", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
+
     }
     
     @Override
@@ -205,12 +208,9 @@ public class ServiceImpl implements Service{
             e.printStackTrace();
         }
         try (Gateway gateway = builder.connect()) {
-
             Network network = gateway.getNetwork(channel);
             Contract contract = network.getContract(chaincode);
-
             byte[] result;
-
             result = contract.evaluateTransaction("queryAllDiagnosisByPhoneNumber", phoneNumber);
             String strResult = new String(result);
             java.lang.reflect.Type type = new TypeToken<List<DiagnosisDetailDto>>() {}.getType();
@@ -242,7 +242,7 @@ public class ServiceImpl implements Service{
             Network network = gateway.getNetwork(channel);
             Contract contract = network.getContract(chaincode);
             byte[] result;
-            result = contract.evaluateTransaction("queryAllAppointmentsByPhoneNumber", phoneNumber);
+            result = contract.evaluateTransaction("queryAllAppointmentByPhoneNumber", phoneNumber);
             String strResult = new String(result);
             java.lang.reflect.Type type = new TypeToken<List<AppointmentDetailDto>>() {}.getType();
             return gson.fromJson(strResult, type);
@@ -306,6 +306,66 @@ public class ServiceImpl implements Service{
             peers.add("peer0");
         }
         return this.cmd.invokeChaincode(orgName, peerName, peerPort, channel, chaincode, script, orgs, ports, peers);
+    }
+
+    @Override
+    public DiagnosisDetailDto queryDiagnosis(String userName, String orgName, String channel, String chaincode,
+            String key) {
+        Path walletPath = Paths.get("wallet" + orgName);
+        Wallet wallet = null;
+        try {
+            wallet = Wallet.createFileSystemWallet(walletPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Path networkConfigPath = Paths.get(this.rootPath, "fabric-network", "connection-herec-client.json");
+        Gateway.Builder builder = Gateway.createBuilder();
+        try {
+            builder.identity(wallet, userName).networkConfig(networkConfigPath).discovery(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (Gateway gateway = builder.connect()) {
+            Network network = gateway.getNetwork(channel);
+            Contract contract = network.getContract(chaincode);
+            byte[] result;
+            result = contract.evaluateTransaction("queryDiagnosis", key);
+            DiagnosisDetailDto dto = gson.fromJson(new String(result), DiagnosisDetailDto.class);
+            return dto;
+        } catch (ContractException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public AppointmentDetailDto queryAppointment(String userName, String orgName, String channel, String chaincode,
+            String key) {
+        Path walletPath = Paths.get("wallet" + orgName);
+        Wallet wallet = null;
+        try {
+            wallet = Wallet.createFileSystemWallet(walletPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Path networkConfigPath = Paths.get(this.rootPath, "fabric-network", "connection-herec-client.json");
+        Gateway.Builder builder = Gateway.createBuilder();
+        try {
+            builder.identity(wallet, userName).networkConfig(networkConfigPath).discovery(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try (Gateway gateway = builder.connect()) {
+            Network network = gateway.getNetwork(channel);
+            Contract contract = network.getContract(chaincode);
+            byte[] result;
+            result = contract.evaluateTransaction("queryAppointment", key);
+            AppointmentDetailDto dto = gson.fromJson(new String(result), AppointmentDetailDto.class);
+            return dto;
+        } catch (ContractException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     
     
