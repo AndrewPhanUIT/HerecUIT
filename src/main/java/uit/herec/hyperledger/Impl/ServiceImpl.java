@@ -99,14 +99,6 @@ public class ServiceImpl implements Service{
         return true;
     }
     
-    public static void main(String[] args) {
-//        new ServiceImpl().enrollAdmin("ClientMSP", "Client", "7054");
-//        new ServiceImpl().registerUser("andrew", "ClientMSP", "Client", "7054", 1);
-//        new ServiceImpl().queryAllDiagnosisByPhoneNumber("andrew", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
-        new ServiceImpl().queryAllAppointmentsByPhoneNumber("andrew", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
-
-    }
-    
     @Override
     public boolean registerUser(String username, String msp, String orgName, String caHost, int departmentNumber) {
         try {
@@ -367,6 +359,4 @@ public class ServiceImpl implements Service{
         }
         return null;
     }
-    
-    
 }

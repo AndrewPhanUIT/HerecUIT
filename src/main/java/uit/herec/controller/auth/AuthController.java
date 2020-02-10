@@ -18,10 +18,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.gson.Gson;
+
 import uit.herec.common.APIConstants;
 import uit.herec.common.Constant;
 import uit.herec.common.dto.ApiResponseDto;
 import uit.herec.common.dto.JwtAuthenticationResponseDto;
+import uit.herec.common.form.Form;
 import uit.herec.common.form.LoginForm;
 import uit.herec.common.form.RegisterForm;
 import uit.herec.common.message.Success;
@@ -75,4 +78,15 @@ public class AuthController {
         }
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
+    
+    @PostMapping("/test")
+    public ResponseEntity<ApiResponseDto> test(@RequestBody String json) {
+        String temp = json.substring(1, json.length() - 1);
+        Gson gson = new Gson();
+        Form form = gson.fromJson(temp, Form.class);
+        System.out.println(form.getCode());
+        return ResponseEntity.ok(null);
+    }
+    
+    
 }

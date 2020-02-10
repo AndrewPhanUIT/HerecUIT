@@ -18,7 +18,6 @@ public class AppointmentMapper {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         SimpleDateFormat sdf1 = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
         AppointmentDto appointmentDto = new AppointmentDto(entity.getOrganization().getName(), entity.getClinician(), sdf.format(entity.getCreatedAt()), sdf1.format(entity.getAppointmentTime()));
-        
         dto.setAppointment(appointmentDto);
         return dto;
     }

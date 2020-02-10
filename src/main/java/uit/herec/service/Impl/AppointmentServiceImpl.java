@@ -7,6 +7,8 @@ import uit.herec.common.dto.AppointmentDetailDto;
 import uit.herec.dao.entity.Appointment;
 import uit.herec.dao.repository.AppointmentRepository;
 import uit.herec.service.IAppointmentService;
+import uit.herec.service.IUserService;
+import uit.herec.service.mapper.AppointmentMapper;
 
 @Service
 public class AppointmentServiceImpl implements IAppointmentService{
@@ -15,7 +17,13 @@ public class AppointmentServiceImpl implements IAppointmentService{
     private uit.herec.hyperledger.Service hyperledgerService;
     
     @Autowired
+    private IUserService userService;
+    
+    @Autowired
     private AppointmentRepository appointmentRepository;
+    
+    @Autowired
+    private AppointmentMapper appointmentMapper;
     
     @Override
     public AppointmentDetailDto getAppointmentByKey(String hyperledgerName, String key) {
@@ -23,7 +31,8 @@ public class AppointmentServiceImpl implements IAppointmentService{
         if(dto == null) {
             Appointment appointment = this.appointmentRepository.findByKey(key)
                     .orElse(null);
-            
+            String phoneNumber = this.userService.getPhoneNumber(hyperledgerName);
+            return this.appointmentMapper.mapEntityToDto(appointment, phoneNumber);
         }
         return dto;
     }
