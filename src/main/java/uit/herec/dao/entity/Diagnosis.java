@@ -49,6 +49,14 @@ public class Diagnosis implements java.io.Serializable {
         this.allergies = allergies;
         this.medications = medications;
     }
+    
+    public Diagnosis(AppUser appUser, Organization organization, String clinician, Date createdAt, String symtoms) {
+        this.appUser = appUser;
+        this.organization = organization;
+        this.clinician = clinician;
+        this.createdAt = createdAt;
+        this.symtoms = symtoms;
+    }
 
     @Id
     @GeneratedValue(strategy = IDENTITY)

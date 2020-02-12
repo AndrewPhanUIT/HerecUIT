@@ -54,4 +54,10 @@ public class UserServiceImpl implements IUserService{
         return user.getPhoneNumber();
     }
 
+    @Override
+    public AppUser getUserByPhoneNumber(String phoneNumber) {
+        return this.userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(()-> new BadRequestException(String.format(Error.PHONE_NUMBER_NOT_FOUND, phoneNumber)));
+    }
+
 }

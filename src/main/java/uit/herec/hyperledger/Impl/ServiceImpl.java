@@ -359,4 +359,14 @@ public class ServiceImpl implements Service{
         }
         return null;
     }
+
+    @Override
+    public int countIndexAppointment() {
+        return 0;
+    }
+
+    @Override
+    public int countIndexDiagnosis() {
+        return 0;
+    }
 }

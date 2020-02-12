@@ -37,4 +37,14 @@ public class AppointmentServiceImpl implements IAppointmentService{
         return dto;
     }
 
+    @Override
+    public boolean addNewAppointment(Appointment entity) {
+        return this.appointmentRepository.saveAndFlush(entity) != null;
+    }
+
+    @Override
+    public int countAppointment() {
+        return (int) this.appointmentRepository.count();
+    }
+
 }

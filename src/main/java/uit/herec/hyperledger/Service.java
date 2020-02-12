@@ -16,4 +16,6 @@ public interface Service {
     boolean addNewAppoiment(String orgName, String channel, String phoneNumber, AppointmentDto appointmentDto);
     DiagnosisDetailDto queryDiagnosis(String userName, String orgName, String channel, String chaincode, String key);
     AppointmentDetailDto queryAppointment(String userName, String orgName, String channel, String chaincode, String key);
+    int countIndexAppointment();
+    int countIndexDiagnosis();
 }

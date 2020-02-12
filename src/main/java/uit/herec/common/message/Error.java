@@ -10,4 +10,7 @@ public final class Error {
     public final static String HYPERLEDGER_NAME_NOT_FOUND = "Không thể tìm thấy hyperledger name: %s";
     public final static String DIAGNOSIS_NOT_FOUND = "Không thể xem thông tin bệnh án. Vui lòng liên hệ admin!";
     public final static String APPOINTMENT_NOT_FOUND = "Không thể xem thông tin lịch hẹn. Vui lòng liên hệ admin!";
+    public final static String CANT_ADD_APPOINTMENT = "Lỗi khi thêm dữ liệu lịch hẹn. Vui lòng liên hệ admin!";
+    public final static String CANT_ADD_DIAGNOSIS = "Lỗi khi thêm dữ liệu bệnh án. Vui lòng liên hệ admin!";
+
 }

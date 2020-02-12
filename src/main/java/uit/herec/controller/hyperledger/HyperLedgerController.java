@@ -21,11 +21,10 @@ import com.google.gson.Gson;
 import uit.herec.common.APIConstants;
 import uit.herec.common.dto.ApiResponseDto;
 import uit.herec.common.dto.AppointmentDetailDto;
-import uit.herec.common.dto.AppointmentDto;
 import uit.herec.common.dto.DiagnosisDetailDto;
-import uit.herec.common.dto.DiagnosisDto;
 import uit.herec.common.form.Form;
 import uit.herec.common.message.Error;
+import uit.herec.common.message.Success;
 import uit.herec.hyperledger.Service;
 import uit.herec.service.IAppointmentService;
 import uit.herec.service.IDiagnosisService;
@@ -70,6 +69,34 @@ public class HyperLedgerController {
         return ResponseEntity.ok(dto);
     }
     
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("/all/diagnosis")
+    public ResponseEntity<ApiResponseDto> queryAllDiagnosis(@RequestParam String hyperledgerName) {
+        String phoneNumber = this.userService.getPhoneNumber(hyperledgerName);
+        List<DiagnosisDetailDto> diagnosis = this.hyperledgerService.queryAllDiagnosisByPhoneNumber(hyperledgerName,
+                "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
+        List<Object> objs = new ArrayList<Object>();
+        objs.add(diagnosis);
+        ApiResponseDto dto = new ApiResponseDto();
+        dto.setSuccess(true);
+        dto.setDatas(objs);
+        return ResponseEntity.ok(dto);
+    }
+    
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    @GetMapping("")
+    public ResponseEntity<ApiResponseDto> queryAllAppointments(@RequestParam String hyperledgerName) {
+        String phoneNumber = this.userService.getPhoneNumber(hyperledgerName);
+        List<AppointmentDetailDto> appointments = this.hyperledgerService.queryAllAppointmentsByPhoneNumber(
+                hyperledgerName, "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
+        List<Object> objs = new ArrayList<Object>();
+        objs.add(appointments);
+        ApiResponseDto dto = new ApiResponseDto();
+        dto.setSuccess(true);
+        dto.setDatas(objs);
+        return ResponseEntity.ok(dto);
+    }
+    
     @GetMapping("/diagnosis")
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     public ResponseEntity<ApiResponseDto> queryDiagnosis(@RequestParam String hyperledgerName, @RequestParam String key) {
@@ -96,8 +123,10 @@ public class HyperLedgerController {
         Gson gson = new Gson();
         Form form = gson.fromJson(convertedJson, Form.class);
         IBaseOrgService orgService = this.baseOrgService.getService(form.getCode());
-        DiagnosisDto diagnosisDto = orgService.formatDiagnosis(convertedJson);
-        return ResponseEntity.ok(null);
+        if (orgService.addDiagnosis(convertedJson)) {
+            return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(true, Arrays.asList(""), Success.ADD_DIAGNOSIS), HttpStatus.OK);
+        }
+        return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(false, Arrays.asList(""), Error.CANT_ADD_DIAGNOSIS), HttpStatus.BAD_REQUEST);
     }
     
     @PostMapping("/add/appointment")
@@ -106,7 +135,9 @@ public class HyperLedgerController {
     	Gson gson = new Gson();
     	Form form = gson.fromJson(convertedJson, Form.class);
     	IBaseOrgService orgService = this.baseOrgService.getService(form.getCode());
-    	AppointmentDto appointmentDto = orgService.formatAppointment(convertedJson);
-    	return ResponseEntity.ok(null);
+    	if (orgService.addAppointment(convertedJson)) {
+    	    return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(true, Arrays.asList(""), Success.ADD_APPOINTMENT), HttpStatus.OK);
+    	}
+    	return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(false, Arrays.asList(""), Error.CANT_ADD_APPOINTMENT), HttpStatus.BAD_REQUEST);
     }
 }

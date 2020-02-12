@@ -37,4 +37,14 @@ public class DiagnosisServiceImpl implements IDiagnosisService{
         return dto;
     }
 
+    @Override
+    public boolean addNewDiagnosis(Diagnosis entity) {
+        return this.repository.saveAndFlush(entity) != null;
+    }
+
+    @Override
+    public int count() {
+        return (int) this.repository.count();
+    }
+
 }
