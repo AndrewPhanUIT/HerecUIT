@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import uit.herec.common.APIConstants;
 import uit.herec.common.dto.ApiResponseDto;
 import uit.herec.common.dto.AppointmentDetailDto;
+import uit.herec.common.dto.AppointmentDto;
 import uit.herec.common.dto.DiagnosisDetailDto;
 import uit.herec.common.dto.DiagnosisDto;
 import uit.herec.common.form.Form;
@@ -96,7 +97,16 @@ public class HyperLedgerController {
         Form form = gson.fromJson(convertedJson, Form.class);
         IBaseOrgService orgService = this.baseOrgService.getService(form.getCode());
         DiagnosisDto diagnosisDto = orgService.formatDiagnosis(convertedJson);
-        
         return ResponseEntity.ok(null);
+    }
+    
+    @PostMapping("/add/appointment")
+    public ResponseEntity<ApiResponseDto> addNewAppointment(@RequestBody String json) {
+    	String convertedJson = json.substring(1, json.length() - 1);
+    	Gson gson = new Gson();
+    	Form form = gson.fromJson(convertedJson, Form.class);
+    	IBaseOrgService orgService = this.baseOrgService.getService(form.getCode());
+    	AppointmentDto appointmentDto = orgService.formatAppointment(convertedJson);
+    	return ResponseEntity.ok(null);
     }
 }
