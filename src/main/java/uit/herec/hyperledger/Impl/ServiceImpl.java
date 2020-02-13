@@ -43,6 +43,8 @@ import uit.herec.dao.repository.AppUserRepository;
 import uit.herec.dao.repository.OrganizationRepository;
 import uit.herec.hyperledger.Cmd;
 import uit.herec.hyperledger.Service;
+import uit.herec.service.IOrganizationService;
+import uit.herec.service.IUserService;
 
 @org.springframework.stereotype.Service
 public class ServiceImpl implements Service{
@@ -58,6 +60,12 @@ public class ServiceImpl implements Service{
     
     @Autowired
     private AppUserRepository userRepository;
+    
+    @Autowired
+    private IOrganizationService orgService;
+    
+    @Autowired
+    private IUserService userService;
     
     static {
         System.setProperty("org.hyperledger.fabric.sdk.service_discovery.as_localhost", "true");
@@ -368,5 +376,22 @@ public class ServiceImpl implements Service{
     @Override
     public int countIndexDiagnosis() {
         return 0;
+    }
+
+    @Override
+    public boolean addPermission(String orgHyperledgerName, String phoneNumber) {
+        Organization org = this.orgService.getOrgByHyperledgerName(orgHyperledgerName);
+        String orgName = org.getOrgName();
+        String peerPort = org.getPort();
+        if (this.cmd.addPermission(orgName, peerPort, "herecchannel", "diagnosis")) {
+            AppUser appUser = this.userService.getUserByPhoneNumber(phoneNumber);
+            if (appUser != null) {
+                appUser.getOrganizations().add(org);
+                return this.userService.saveOrUpdate(appUser);
+            }
+            logger.error(String.format(Error.PHONE_NUMBER_NOT_FOUND, phoneNumber));
+            return false;
+        }
+        return false;
     }
 }

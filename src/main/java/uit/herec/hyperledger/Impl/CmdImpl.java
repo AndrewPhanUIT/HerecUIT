@@ -109,6 +109,21 @@ public class CmdImpl implements Cmd {
         return true;
     }
 
+    @Override
+    public boolean addPermission(String orgName, String peerPort, String channel, String chaincode) {
+        logger.info("START ADDING PERMISSION");
+        Path path = Paths.get(ROOT_PATH, this.fabricFolderName);
+        try {
+            this.exec(path, "./addPermission.sh", String.format("%sMSP", orgName), peerPort,
+                    orgName.toLowerCase(), channel, chaincode);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return false;
+        }
+        logger.info("END ADDING PERMISSION");
+        return true;
+    }
+
     public static void main(String[] args) {
         String orgName = "Client";
         String peerName = "peer0";

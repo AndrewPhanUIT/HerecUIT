@@ -69,6 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		.authorizeRequests()
 		.antMatchers("/api/auth/**").permitAll()
 	    .antMatchers("/api/hyperledger/add/**").permitAll()
+	    .antMatchers("/api/hyperledger/add/permission").authenticated()
 		.anyRequest().authenticated();
 		
 		http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

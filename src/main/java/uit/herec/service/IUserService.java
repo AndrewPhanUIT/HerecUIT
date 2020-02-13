@@ -9,4 +9,5 @@ public interface IUserService {
     String getHyperledgerName(String phoneNumber);
     String getPhoneNumber(String hyperledgerName);
     AppUser getUserByPhoneNumber(String phoneNumber);
+    boolean saveOrUpdate(AppUser appUser);
 }

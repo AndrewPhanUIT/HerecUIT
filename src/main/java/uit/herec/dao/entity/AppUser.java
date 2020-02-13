@@ -192,7 +192,4 @@ public class AppUser extends DateAudit {
     public void setPort(String port) {
         this.port = port;
     }
-    
-    
-
 }

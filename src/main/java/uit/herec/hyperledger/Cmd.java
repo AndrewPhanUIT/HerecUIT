@@ -9,4 +9,5 @@ public interface Cmd {
     void stopServer();
     boolean invokeChaincode(String orgName, String peerName, String peerPort, String channel, String chaincode, 
             ChaincodeScript script, List<String> orgs, List<String> ports, List<String> peers);
+    boolean addPermission(String orgName, String peerPort, String channel, String chaincode);
 }

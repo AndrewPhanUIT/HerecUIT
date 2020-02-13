@@ -136,7 +136,7 @@ public class Diagnosis implements java.io.Serializable {
         this.medications = medications;
     }
 
-    @Column(name = "key")
+    @Column(name = "key_hyperledger", length = 19)
     public String getKey() {
         return key;
     }

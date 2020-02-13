@@ -23,6 +23,14 @@ PeerOrgs:
     Domain: quan12.herec.uit
     EnableNodeOUs: true
     Template:
-      Count: 2
+      Count: 1
+    Users:
+      Count: 1
+
+  - Name: TanPhu
+    Domain: tanphu.herec.uit
+    EnableNodeOUs: true
+    Template:
+      Count: 1
     Users:
       Count: 1

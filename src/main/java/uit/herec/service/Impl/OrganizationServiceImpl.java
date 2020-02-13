@@ -1,5 +1,8 @@
 package uit.herec.service.Impl;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,11 @@ public class OrganizationServiceImpl implements IOrganizationService{
     public Organization getOrgByHyperledgerName(String hyperledgerName) {
         return this.orgRepository.findByHyperledgerNameIgnoreCase(hyperledgerName)
                 .orElse(null);
+    }
+
+    @Override
+    public Set<Organization> findAll() {
+        return this.orgRepository.findAll().stream().collect(Collectors.toSet());
     }
 
 }

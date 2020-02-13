@@ -96,7 +96,7 @@ public class Appointment implements java.io.Serializable {
         this.appointmentTime = appointmentTime;
     }
 
-    @Column(name = "key")
+    @Column(name = "key_hyperledger",  length = 19)
     public String getKey() {
         return key;
     }

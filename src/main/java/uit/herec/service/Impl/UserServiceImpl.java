@@ -60,4 +60,9 @@ public class UserServiceImpl implements IUserService{
                 .orElseThrow(()-> new BadRequestException(String.format(Error.PHONE_NUMBER_NOT_FOUND, phoneNumber)));
     }
 
+    @Override
+    public boolean saveOrUpdate(AppUser appUser) {
+        return this.userRepository.saveAndFlush(appUser) != null;
+    }
+
 }

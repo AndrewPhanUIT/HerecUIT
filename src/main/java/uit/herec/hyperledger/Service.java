@@ -18,4 +18,5 @@ public interface Service {
     AppointmentDetailDto queryAppointment(String userName, String orgName, String channel, String chaincode, String key);
     int countIndexAppointment();
     int countIndexDiagnosis();
+    boolean addPermission(String orgHyperledgerName, String phoneNumber);
 }
