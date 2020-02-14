@@ -36,3 +36,13 @@ PEERPEM=crypto-config/peerOrganizations/quan12.herec.uit/tlsca/tlsca.quan12.here
 CAPEM=crypto-config/peerOrganizations/quan12.herec.uit/ca/ca.quan12.herec.uit-cert.pem
 
 echo "$(json_ccp $ORG $P0PORT $P1PORT $CAPORT $PEERPEM $CAPEM $ORGPREFIX)" > connection-herec-quan12.json
+
+ORG=TanPhu
+ORGPREFIX=tanphu
+P0PORT=11051
+P1PORT=12051
+CAPORT=9054
+PEERPEM=crypto-config/peerOrganizations/tanphu.herec.uit/tlsca/tlsca.tanphu.herec.uit-cert.pem
+CAPEM=crypto-config/peerOrganizations/tanphu.herec.uit/ca/ca.tanphu.herec.uit-cert.pem
+
+echo "$(json_ccp $ORG $P0PORT $P1PORT $CAPORT $PEERPEM $CAPEM $ORGPREFIX)" > connection-herec-tanphu.json

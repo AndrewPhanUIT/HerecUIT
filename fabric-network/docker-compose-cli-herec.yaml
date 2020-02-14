@@ -51,6 +51,22 @@ services:
       service: peer1.quan12.herec.uit
     networks:
       - herec
+  
+  peer0.tanphu.herec.uit:
+    container_name: peer0.tanphu.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer0.tanphu.herec.uit
+    networks:
+      - herec
+
+  peer1.tanphu.herec.uit:
+    container_name: peer1.tanphu.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer1.tanphu.herec.uit
+    networks:
+      - herec
 
   cli:
     container_name: cli
@@ -85,5 +101,7 @@ services:
       - peer1.client.herec.uit
       - peer0.quan12.herec.uit
       - peer1.quan12.herec.uit
+      - peer0.tanphu.herec.uit
+      - peer1.tanphu.herec.uit
     networks:
       - herec

@@ -23,7 +23,7 @@ PeerOrgs:
     Domain: quan12.herec.uit
     EnableNodeOUs: true
     Template:
-      Count: 1
+      Count: 2
     Users:
       Count: 1
 
@@ -31,6 +31,6 @@ PeerOrgs:
     Domain: tanphu.herec.uit
     EnableNodeOUs: true
     Template:
-      Count: 1
+      Count: 2
     Users:
       Count: 1

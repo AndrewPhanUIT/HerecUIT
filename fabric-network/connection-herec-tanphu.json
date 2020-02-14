@@ -1,0 +1,60 @@
+{
+    "name": "herec-uit-tanphu",
+    "version": "1.0.0",
+    "client": {
+        "organization": "TanPhu",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "TanPhu": {
+            "mspid": "TanPhuMSP",
+            "peers": [
+                "peer0.tanphu.herec.uit",
+                "peer1.tanphu.herec.uit"
+            ],
+            "certificateAuthorities": [
+                "ca.tanphu.herec.uit"
+            ]
+        }
+    },
+    "peers": {
+        "peer0.tanphu.herec.uit": {
+            "url": "grpcs://localhost:11051",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICVzCCAf2gAwIBAgIQXCsQu+3QFU2Pt1LM3lodbjAKBggqhkjOPQQDAjB2MQsw\nCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\nYW5jaXNjbzEZMBcGA1UEChMQdGFucGh1LmhlcmVjLnVpdDEfMB0GA1UEAxMWdGxz\nY2EudGFucGh1LmhlcmVjLnVpdDAeFw0yMDAyMTQxODQ5MDBaFw0zMDAyMTExODQ5\nMDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\nEw1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExB0YW5waHUuaGVyZWMudWl0MR8wHQYD\nVQQDExZ0bHNjYS50YW5waHUuaGVyZWMudWl0MFkwEwYHKoZIzj0CAQYIKoZIzj0D\nAQcDQgAEq+qtQkQC2SycHPa7PMJbzn5/CJWKJZ3IMwPTJ7Qxy/F0Tx421aXvrSCI\nREcgm/dblBAtliPMgzkug9O77wvfB6NtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\nJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\nDgQiBCAPjkRK9zrllrc4PZ9OkjNPyDBrdJBzXvFlpW2nGFUByjAKBggqhkjOPQQD\nAgNIADBFAiEA8vKFn/cSjdNYqyhr+StauIhcpvWM84kEIq7xb0XLr/wCIGMrUm6E\n5ypFqrkhOJ0gfYrOzgC/A84sFwcuzeO5Y63H\n-----END CERTIFICATE-----\n"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer0.tanphu.herec.uit",
+                "hostnameOverride": "peer0.tanphu.herec.uit"
+            }
+        },
+        "peer1.tanphu.herec.uit": {
+            "url": "grpcs://localhost:12051",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICVzCCAf2gAwIBAgIQXCsQu+3QFU2Pt1LM3lodbjAKBggqhkjOPQQDAjB2MQsw\nCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\nYW5jaXNjbzEZMBcGA1UEChMQdGFucGh1LmhlcmVjLnVpdDEfMB0GA1UEAxMWdGxz\nY2EudGFucGh1LmhlcmVjLnVpdDAeFw0yMDAyMTQxODQ5MDBaFw0zMDAyMTExODQ5\nMDBaMHYxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQH\nEw1TYW4gRnJhbmNpc2NvMRkwFwYDVQQKExB0YW5waHUuaGVyZWMudWl0MR8wHQYD\nVQQDExZ0bHNjYS50YW5waHUuaGVyZWMudWl0MFkwEwYHKoZIzj0CAQYIKoZIzj0D\nAQcDQgAEq+qtQkQC2SycHPa7PMJbzn5/CJWKJZ3IMwPTJ7Qxy/F0Tx421aXvrSCI\nREcgm/dblBAtliPMgzkug9O77wvfB6NtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1Ud\nJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1Ud\nDgQiBCAPjkRK9zrllrc4PZ9OkjNPyDBrdJBzXvFlpW2nGFUByjAKBggqhkjOPQQD\nAgNIADBFAiEA8vKFn/cSjdNYqyhr+StauIhcpvWM84kEIq7xb0XLr/wCIGMrUm6E\n5ypFqrkhOJ0gfYrOzgC/A84sFwcuzeO5Y63H\n-----END CERTIFICATE-----\n"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.tanphu.herec.uit",
+                "hostnameOverride": "peer1.tanphu.herec.uit"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.tanphu.herec.uit": {
+            "url": "https://localhost:9054",
+            "caName": "ca-org-tanphu",
+            "tlsCACerts": {
+                "pem": "-----BEGIN CERTIFICATE-----\nMIICUDCCAfegAwIBAgIQTqI6LvvKgfei+csRAWP5IjAKBggqhkjOPQQDAjBzMQsw\nCQYDVQQGEwJVUzETMBEGA1UECBMKQ2FsaWZvcm5pYTEWMBQGA1UEBxMNU2FuIEZy\nYW5jaXNjbzEZMBcGA1UEChMQdGFucGh1LmhlcmVjLnVpdDEcMBoGA1UEAxMTY2Eu\ndGFucGh1LmhlcmVjLnVpdDAeFw0yMDAyMTQxODQ5MDBaFw0zMDAyMTExODQ5MDBa\nMHMxCzAJBgNVBAYTAlVTMRMwEQYDVQQIEwpDYWxpZm9ybmlhMRYwFAYDVQQHEw1T\nYW4gRnJhbmNpc2NvMRkwFwYDVQQKExB0YW5waHUuaGVyZWMudWl0MRwwGgYDVQQD\nExNjYS50YW5waHUuaGVyZWMudWl0MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE\nujS7iLCR72gNGgARmu92P/keJQGoAjfE3m+Tl5kkRyFq02H7XzKh3ShPck/U4WjD\nxpuHRFT0nVpeQhSQv3Y2HKNtMGswDgYDVR0PAQH/BAQDAgGmMB0GA1UdJQQWMBQG\nCCsGAQUFBwMCBggrBgEFBQcDATAPBgNVHRMBAf8EBTADAQH/MCkGA1UdDgQiBCDq\n76GU3ZkUiq9WkJ4/FqYDVtbL9iEfiveToFh+OTMXDjAKBggqhkjOPQQDAgNHADBE\nAiBbQ3tXn9SoMC/9WnC16UG7Tmr92GWC3jIPgqsBbJrZYwIgSQgYEaadd0RfeqXW\nvHkwKPCWuRPYC97naMhmAu7du/M=\n-----END CERTIFICATE-----\n"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}

@@ -36,11 +36,28 @@ services:
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem
       - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY
     ports:
-      - "8054:7054"
+      - "8054:8054"
     command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA2_PRIVATE_KEY -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/quan12.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_peer_quan12
+    networks:
+      - herec
+
+  ca-tanphu:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-tanphu
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.tanphu.herec.uit-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA3_PRIVATE_KEY
+    ports:
+      - "9054:9054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.tanphu.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/CA3_PRIVATE_KEY -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/tanphu.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peer_tanphu
     networks:
       - herec
 
@@ -81,5 +98,21 @@ services:
     extends:
       file:  base/docker-compose-base-herec.yaml
       service: peer1.quan12.herec.uit
+    networks:
+      - herec
+
+  peer0.tanphu.herec.uit:
+    container_name: peer0.tanphu.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer0.tanphu.herec.uit
+    networks:
+      - herec
+    
+  peer1.tanphu.herec.uit:
+    container_name: peer1.tanphu.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer1.tanphu.herec.uit
     networks:
       - herec
