@@ -1,0 +1,118 @@
+version: '2'
+
+volumes:
+  orderer.herec.uit:
+  peer0.client.herec.uit:
+  peer1.client.herec.uit:
+  peer0.quan12.herec.uit:
+  peer1.quan12.herec.uit:
+
+networks:
+  herec:
+services:
+  ca-client:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-client
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.client.herec.uit-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/8a3be3fe8d2a652aa127b4d5b7b56393329cc0818fb2a8554f120c8f85318e4c_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.client.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/8a3be3fe8d2a652aa127b4d5b7b56393329cc0818fb2a8554f120c8f85318e4c_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/client.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peer_client
+    networks:
+      - herec
+
+  ca-quan12:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-quan12
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/86bf486b5f46bfae017b478b4143082f91b40aa7fc403da5aecb907c101dbe42_sk
+    ports:
+      - "8054:8054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/86bf486b5f46bfae017b478b4143082f91b40aa7fc403da5aecb907c101dbe42_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/quan12.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peer_quan12
+    networks:
+      - herec
+
+  ca-tanphu:
+    image: hyperledger/fabric-ca:$IMAGE_TAG
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca-tanphu
+      - FABRIC_CA_SERVER_TLS_ENABLED=true
+      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.tanphu.herec.uit-cert.pem
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/6124367080fd15c5e7059fd70d4ff305e0e83fb2e601498bf36b1d522e3a415e_sk
+    ports:
+      - "9054:9054"
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.tanphu.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/6124367080fd15c5e7059fd70d4ff305e0e83fb2e601498bf36b1d522e3a415e_sk -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/tanphu.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca_peer_tanphu
+    networks:
+      - herec
+
+  orderer.herec.uit:
+    extends:
+      file:   base/docker-compose-base-herec.yaml
+      service: orderer.herec.uit
+    container_name: orderer.herec.uit
+    networks:
+      - herec
+
+  peer0.client.herec.uit:
+    container_name: peer0.client.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer0.client.herec.uit
+    networks:
+      - herec
+
+  peer1.client.herec.uit:
+    container_name: peer1.client.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer1.client.herec.uit
+    networks:
+      - herec
+
+  peer0.quan12.herec.uit:
+    container_name: peer0.quan12.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer0.quan12.herec.uit
+    networks:
+      - herec
+
+  peer1.quan12.herec.uit:
+    container_name: peer1.quan12.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer1.quan12.herec.uit
+    networks:
+      - herec
+
+  peer0.tanphu.herec.uit:
+    container_name: peer0.tanphu.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer0.tanphu.herec.uit
+    networks:
+      - herec
+    
+  peer1.tanphu.herec.uit:
+    container_name: peer1.tanphu.herec.uit
+    extends:
+      file:  base/docker-compose-base-herec.yaml
+      service: peer1.tanphu.herec.uit
+    networks:
+      - herec

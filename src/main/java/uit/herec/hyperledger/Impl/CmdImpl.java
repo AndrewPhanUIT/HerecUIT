@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -112,7 +110,9 @@ public class CmdImpl implements Cmd {
     @Override
     public boolean addPermission(String orgName, String peerPort, String channel, String chaincode) {
         logger.info("START ADDING PERMISSION");
-        Path path = Paths.get(ROOT_PATH, this.fabricFolderName);
+//        Path path = Paths.get(ROOT_PATH, this.fabricFolderName);
+        Path path = Paths.get(ROOT_PATH, "fabric-network");
+
         try {
             this.exec(path, "./addPermission.sh", String.format("%sMSP", orgName), peerPort,
                     orgName.toLowerCase(), channel, chaincode);
@@ -125,15 +125,6 @@ public class CmdImpl implements Cmd {
     }
 
     public static void main(String[] args) {
-        String orgName = "Client";
-        String peerName = "peer0";
-        String peerPort = "7051";
-        String channel = "herecchannel";
-        String chaincode = "diagnosis";
-        ChaincodeScript script = new ChaincodeScript("initLedger", new ArrayList<>());
-        String[] orgs = {"Client", "Quan12"};
-        String[] peers = {"peer0", "peer0"};
-        String[] ports = {"7051", "9051"};
-        new CmdImpl().invokeChaincode(orgName, peerName, peerPort, channel, chaincode, script, Arrays.asList(orgs), Arrays.asList(ports), Arrays.asList(peers));
+        new CmdImpl().addPermission("TanPhu", "11051", "herecchannel", "diagnosis");
     }
 }

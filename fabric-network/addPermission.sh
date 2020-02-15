@@ -9,13 +9,13 @@ CHANNEL=$4
 CHAINCODE=$5
 
 MSP_CONFIGPATH=${CONFIG_ROOT}/crypto/peerOrganizations/${ORG_NAME_LOWER}.herec.uit/users/Admin@${ORG_NAME_LOWER}.herec.uit/msp
-TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/${ORG_NAME_LOWER}.herec.uit/peers/${PEER_NAME}.${ORG_NAME_LOWER}.herec.uit/tls/ca.crt
+TLS_ROOTCERT_FILE=${CONFIG_ROOT}/crypto/peerOrganizations/${ORG_NAME_LOWER}.herec.uit/peers/peer0.${ORG_NAME_LOWER}.herec.uit/tls/ca.crt
 
 set -x
 echo "Start adding new org to channel ${CHANNEL}"
 docker exec \
   -e CORE_PEER_LOCALMSPID=$MSP \
-  -e CORE_PEER_ADDRESS=peer0.client.herec.uit:${PEER_PORT} \
+  -e CORE_PEER_ADDRESS=peer0.${ORG_NAME_LOWER}.herec.uit:${PEER_PORT} \
   -e CORE_PEER_MSPCONFIGPATH=$MSP_CONFIGPATH \
   -e CORE_PEER_TLS_ROOTCERT_FILE=${TLS_ROOTCERT_FILE} \
   cli \
@@ -24,7 +24,7 @@ docker exec \
 echo "Installing smart contract on peer.${ORG_NAME_LOWER}.herec.uit"
 docker exec \
   -e CORE_PEER_LOCALMSPID=$MSP \
-  -e CORE_PEER_ADDRESS=peer0.client.herec.uit:${PEER_PORT} \
+  -e CORE_PEER_ADDRESS=peer0.${ORG_NAME_LOWER}.herec.uit:${PEER_PORT} \
   -e CORE_PEER_MSPCONFIGPATH=$MSP_CONFIGPATH \
   -e CORE_PEER_TLS_ROOTCERT_FILE=${TLS_ROOTCERT_FILE} \
   cli \

@@ -16,7 +16,7 @@ set -x
 echo "Submitting initLedger transaction to smart contract on herecchannel"
 docker exec \
   -e CORE_PEER_LOCALMSPID=$MSP \
-  -e CORE_PEER_ADDRESS=${PEER_NAME}.client.herec.uit:${PEER_PORT} \
+  -e CORE_PEER_ADDRESS=${PEER_NAME}.${ORG_NAME_LOWER}.herec.uit:${PEER_PORT} \
   -e CORE_PEER_MSPCONFIGPATH=$MSP_CONFIGPATH \
   -e CORE_PEER_TLS_ROOTCERT_FILE=${TLS_ROOTCERT_FILE} \
   cli \

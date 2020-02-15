@@ -115,9 +115,6 @@ function networkUp() {
   fi
 }
 
-# Upgrade the network components which are at version 1.3.x to 1.4.x
-# Stop the orderer and peers, backup the ledger for orderer and peers, cleanup chaincode containers and images
-# and relaunch the orderer and peers with latest tag
 function upgradeNetwork() {
   if [[ "$IMAGETAG" == *"1.4"* ]] || [[ $IMAGETAG == "latest" ]]; then
     docker inspect -f '{{.Config.Volumes}}' orderer.herec.uit | grep -q '/var/hyperledger/production/orderer'
@@ -196,7 +193,7 @@ function networkDown() {
     docker run -v $PWD:/tmp/first-network --rm hyperledger/fabric-tools:$IMAGETAG rm -Rf /tmp/first-network/ledgers-backup
     clearContainers
     removeUnwantedImages
-    rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config ./org3-artifacts/crypto-config/ channel-artifacts/org3.json
+    rm -rf channel-artifacts/*.block channel-artifacts/*.tx crypto-config
     rm -f docker-compose-e2e.yaml
   fi
 }
