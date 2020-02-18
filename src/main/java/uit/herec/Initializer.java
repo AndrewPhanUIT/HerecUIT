@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import uit.herec.common.Utils;
+import uit.herec.common.form.RegisterForm;
+import uit.herec.controller.auth.AuthController;
 import uit.herec.dao.repository.AllergyRepository;
 import uit.herec.dao.repository.AppUserRepository;
 import uit.herec.dao.repository.AppointmentRepository;
@@ -49,8 +51,8 @@ public class Initializer{
     public void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTF-8"));
 //        this.hyperledgerCmd.startServer();
-//        this.removePrevData();
-//        this.initNewData();
+        this.removePrevData();
+        this.initNewData();
     }
     
     private void removePrevData() {
@@ -69,6 +71,8 @@ public class Initializer{
     
     private void initNewData() {
         this.hyperledgerService.enrollAdmin("ClientMSP", "Client", this.clientPort);
+//        RegisterForm form = new RegisterForm("Phan Thế Anh", "AnhPmcl2015", "0783550324");
+//        new AuthController().register(form);
     }
     
 }

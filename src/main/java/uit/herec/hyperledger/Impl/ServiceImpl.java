@@ -394,4 +394,9 @@ public class ServiceImpl implements Service{
         }
         return false;
     }
+    
+    public static void main(String[] args) {
+//        new ServiceImpl().registerUser("user123451232", "ClientMSP", "Client", "7054", 1);
+        new ServiceImpl().queryAllDiagnosisByPhoneNumber("user0783550324", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
+    }
 }

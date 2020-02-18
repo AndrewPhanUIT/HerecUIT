@@ -17,10 +17,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-client
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.client.herec.uit-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/8a3be3fe8d2a652aa127b4d5b7b56393329cc0818fb2a8554f120c8f85318e4c_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/45f4f475c6ab712b5b2579df4580264d68cd9901fe58ca29f173cbf567ba425e_sk
     ports:
       - "7054:7054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.client.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/8a3be3fe8d2a652aa127b4d5b7b56393329cc0818fb2a8554f120c8f85318e4c_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.client.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/45f4f475c6ab712b5b2579df4580264d68cd9901fe58ca29f173cbf567ba425e_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/client.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_peer_client
@@ -34,10 +34,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-quan12
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/86bf486b5f46bfae017b478b4143082f91b40aa7fc403da5aecb907c101dbe42_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/b375f0cc2f92f2802053ccb79c8357873718cc2b5f148b31e4b287aef9c7d0dc_sk
     ports:
       - "8054:8054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/86bf486b5f46bfae017b478b4143082f91b40aa7fc403da5aecb907c101dbe42_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.quan12.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/b375f0cc2f92f2802053ccb79c8357873718cc2b5f148b31e4b287aef9c7d0dc_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/quan12.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_peer_quan12
@@ -51,10 +51,10 @@ services:
       - FABRIC_CA_SERVER_CA_NAME=ca-tanphu
       - FABRIC_CA_SERVER_TLS_ENABLED=true
       - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.tanphu.herec.uit-cert.pem
-      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/6124367080fd15c5e7059fd70d4ff305e0e83fb2e601498bf36b1d522e3a415e_sk
+      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/75a4969eb1b7ced822f66edb3ffa961b0fff95305c8aa34f84b979d078540f74_sk
     ports:
       - "9054:9054"
-    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.tanphu.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/6124367080fd15c5e7059fd70d4ff305e0e83fb2e601498bf36b1d522e3a415e_sk -b admin:adminpw -d'
+    command: sh -c 'fabric-ca-server start --ca.certfile /etc/hyperledger/fabric-ca-server-config/ca.tanphu.herec.uit-cert.pem --ca.keyfile /etc/hyperledger/fabric-ca-server-config/75a4969eb1b7ced822f66edb3ffa961b0fff95305c8aa34f84b979d078540f74_sk -b admin:adminpw -d'
     volumes:
       - ./crypto-config/peerOrganizations/tanphu.herec.uit/ca/:/etc/hyperledger/fabric-ca-server-config
     container_name: ca_peer_tanphu

@@ -8,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,7 +66,7 @@ public class AuthController {
         SecurityContextHolder.getContext().setAuthentication(auth);
         String jwt = tokenProvider.generateToken(auth);
         String hyperledgerName = this.userService.getHyperledgerName(form.getPhoneNumber());
-        ApiResponseDto dto = new ApiResponseDto(true,  Arrays.asList(new JwtAuthenticationResponseDto(jwt, hyperledgerName)), Success.LOGIN);
+        ApiResponseDto dto = new ApiResponseDto(true,  Arrays.asList(new JwtAuthenticationResponseDto(jwt, hyperledgerName, form.getPhoneNumber())), Success.LOGIN);
         return ResponseEntity.ok(dto);
     }
     
@@ -72,7 +74,7 @@ public class AuthController {
     public ResponseEntity<ApiResponseDto> register(@Valid @RequestBody RegisterForm form) {
         ApiResponseDto dto = this.userService.registerPatient(form);
         if(dto.isSuccess()) {
-            hyperlegderService.registerUser("user" + form.getPhoneNumber(), this.clientMsp, this.clientOrg, this.clientPort, Constant.HYPERLEDGER_CLIENT_DEPARTMENT_INDEX);
+            hyperlegderService.registerUser("user" + form.getPhoneNumber(), "ClientMSP", "Client", "7054", Constant.HYPERLEDGER_CLIENT_DEPARTMENT_INDEX);
             Constant.HYPERLEDGER_CLIENT_DEPARTMENT_INDEX++;
             return ResponseEntity.ok(dto);
         }
@@ -88,5 +90,9 @@ public class AuthController {
         return ResponseEntity.ok(null);
     }
     
-    
+    @GetMapping("/validate-user")
+    @PreAuthorize("hasRole('ROLE_PATIENT')")
+    public ResponseEntity<ApiResponseDto> validate() {
+        return ResponseEntity.ok(null); 
+    }
 }
