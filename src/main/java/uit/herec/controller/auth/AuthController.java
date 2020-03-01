@@ -83,6 +83,7 @@ public class AuthController {
     
     @PostMapping("/test")
     public ResponseEntity<ApiResponseDto> test(@RequestBody String json) {
+        System.out.println(json);
         String temp = json.substring(1, json.length() - 1);
         Gson gson = new Gson();
         Form form = gson.fromJson(temp, Form.class);

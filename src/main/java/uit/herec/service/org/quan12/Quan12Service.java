@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -127,25 +128,36 @@ public class Quan12Service implements IBaseOrgService {
         String phoneNumber = diagnosisForm.getPatientPhoneNumber();
         if (this.hyperledgerService.addNewDiagnosis("Quan12", "herecchannel", phoneNumber, dto)) {
             AppUser appUser = this.userService.getUserByPhoneNumber(phoneNumber);
-            Organization org = this.orgService.getOrgByHyperledgerName(this.code);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            Date createdAt = null;
-            try {
-                createdAt = sdf.parse(dto.getCreatedAt());
-            } catch (ParseException e) {
-                e.printStackTrace();
+            boolean isPermissioned = false;
+            Set<Organization> orgs = appUser.getOrganizations();
+            for (Organization org : orgs) {
+                if (org.getHyperledgerName().equals(this.code)) {
+                    isPermissioned = true;
+                    break;
+                }
             }
-            String symptons = "";
-            for (String sympton : dto.getSymptons()) {
-                symptons += sympton + ", ";
+            if (isPermissioned) {
+                Organization org = this.orgService.getOrgByHyperledgerName(this.code);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                Date createdAt = null;
+                try {
+                    createdAt = sdf.parse(dto.getCreatedAt());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                String symptons = "";
+                for (String sympton : dto.getSymptons()) {
+                    symptons += sympton + ", ";
+                }
+                Diagnosis diagnosis = new Diagnosis(appUser, org, dto.getClincian(), createdAt, symptons);
+                int count = this.diagnosisService.count() + 1;
+                diagnosis.setKey(String.format("D%03d", count));
+                this.diagnosisService.addNewDiagnosis(diagnosis);
+                this.allergyService.addAllergies(diagnosis, dto.getAllergies());
+                this.medicationService.addMedications(diagnosis, dto.getMedications());
+                return true; 
             }
-            Diagnosis diagnosis = new Diagnosis(appUser, org, dto.getClincian(), createdAt, symptons);
-            int count = this.diagnosisService.count() + 1;
-            diagnosis.setKey(String.format("D%03d", count));
-            this.diagnosisService.addNewDiagnosis(diagnosis);
-            this.allergyService.addAllergies(diagnosis, dto.getAllergies());
-            this.medicationService.addMedications(diagnosis, dto.getMedications());
-            return true;
+            return false;
         }
         return false;
     }
@@ -155,24 +167,36 @@ public class Quan12Service implements IBaseOrgService {
         Quan12AppointmentForm appointmentForm = gson.fromJson(json, Quan12AppointmentForm.class);
         AppointmentDto dto = this.formatAppointment(appointmentForm.getData());
         String phoneNumber = appointmentForm.getPatientPhoneNumber();
-        if (this.hyperledgerService.addNewAppoiment("Quan12", "herecchannel", phoneNumber, dto)) {
+        boolean resultInvokeHyperledger = this.hyperledgerService.addNewAppoiment("Quan12", "herecchannel", phoneNumber, dto);
+        boolean isPermissioned = false;
+        if (resultInvokeHyperledger) {
             AppUser appUser = this.userService.getUserByPhoneNumber(phoneNumber);
-            Organization org = this.orgService.getOrgByHyperledgerName(this.code);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-            Date createdAt = null;
-            Date appointmentTime = null;
-            try {
-                createdAt = sdf.parse(dto.getCreatedAt());
-                appointmentTime = sdf.parse(dto.getAppointmentDate());
-            } catch (ParseException e) {
-                logger.error("Cant format Date:", e);
-                e.printStackTrace();
+            Set<Organization> orgs = appUser.getOrganizations();
+            for (Organization org : orgs) {
+                if (org.getHyperledgerName().equals(this.code)) {
+                    isPermissioned = true;
+                    break;
+                }
             }
-            Appointment appointment = new Appointment(appUser, org, createdAt, appointmentTime);
-            int count = this.appointmentService.countAppointment() + 1;
-            appointment.setKey(String.format("A%03d", count));
-            appointment.setClinician(dto.getClincian());
-            return this.appointmentService.addNewAppointment(appointment);
+            if (isPermissioned) {
+                Organization org = this.orgService.getOrgByHyperledgerName(this.code);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                Date createdAt = null;
+                Date appointmentTime = null;
+                try {
+                    createdAt = sdf.parse(dto.getCreatedAt());
+                    appointmentTime = sdf.parse(dto.getAppointmentDate());
+                } catch (ParseException e) {
+                    logger.error("Cant format Date:", e);
+                    e.printStackTrace();
+                }
+                Appointment appointment = new Appointment(appUser, org, createdAt, appointmentTime);
+                int count = this.appointmentService.countAppointment() + 1;
+                appointment.setKey(String.format("A%03d", count));
+                appointment.setClinician(dto.getClincian());
+                return this.appointmentService.addNewAppointment(appointment);
+            }
+            return false;
         }
         return false;
     }

@@ -13,7 +13,9 @@ import uit.herec.common.form.RegisterForm;
 import uit.herec.common.message.Error;
 import uit.herec.common.message.Success;
 import uit.herec.dao.entity.AppUser;
+import uit.herec.dao.entity.Organization;
 import uit.herec.dao.repository.AppUserRepository;
+import uit.herec.service.IOrganizationService;
 import uit.herec.service.IUserService;
 import uit.herec.service.mapper.UserMapper;
 
@@ -26,6 +28,9 @@ public class UserServiceImpl implements IUserService{
     private AppUserRepository userRepository;
     
     @Autowired
+    private IOrganizationService orgService;
+    
+    @Autowired
     private UserMapper userMapper;
     
     @Override
@@ -36,6 +41,8 @@ public class UserServiceImpl implements IUserService{
             return new ApiResponseDto(false, Arrays.asList(""), errMess);
         }
         AppUser user = this.userMapper.mapFromRegisterForm(form);
+        Organization org = this.orgService.getOrgByHyperledgerName("quan12");
+        user.getOrganizations().add(org);
         this.userRepository.saveAndFlush(user);
         return new ApiResponseDto(true, Arrays.asList(""), String.format(Success.REGISTER_NEW_USER, form.getFullname()));
     }

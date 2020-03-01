@@ -261,11 +261,14 @@ public class ServiceImpl implements Service{
         String chaincode = "diagnosis";
         List<Object> scriptArgs = new ArrayList<>();
         scriptArgs.add(phoneNumber);
-        scriptArgs.add(diagnosisDto);
+        scriptArgs.add(gson.toJson(diagnosisDto).trim().replace(" ", "#"));
         ChaincodeScript script = new ChaincodeScript("addNewDiagnosisRecord", scriptArgs);
         List<String> orgs = new ArrayList<>();
         List<String> ports = new ArrayList<>();
         List<String> peers = new ArrayList<>();
+        orgs.add(orgName);
+        ports.add(peerPort);
+        peers.add("peer0");
         AppUser appUser = this.userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new BadRequestException(String.format(Error.PHONE_NUMBER_NOT_FOUND, phoneNumber)));
         orgs.add("Client");
@@ -273,9 +276,11 @@ public class ServiceImpl implements Service{
         peers.add(appUser.getPeerName());
         Set<Organization> organizations = appUser.getOrganizations();
         for(Organization organization : organizations) {
-            orgs.add(organization.getHyperledgerName());
-            ports.add(organization.getPort());
-            peers.add("peer0");
+            if (!organization.getOrgName().equalsIgnoreCase(org.getOrgName())) {
+                orgs.add(organization.getHyperledgerName());
+                ports.add(organization.getPort());
+                peers.add("peer0");
+            }
         }
         return this.cmd.invokeChaincode(orgName, peerName, peerPort, channel, chaincode, script, orgs, ports, peers);
     }
@@ -289,21 +294,27 @@ public class ServiceImpl implements Service{
         String chaincode = "diagnosis";
         List<Object> scriptArgs = new ArrayList<>();
         scriptArgs.add(phoneNumber);
-        scriptArgs.add(appointmentDto);
+        scriptArgs.add(gson.toJson(appointmentDto).trim().replace(" ", "#"));
         ChaincodeScript script = new ChaincodeScript("addNewAppointmentRecord", scriptArgs);
         List<String> orgs = new ArrayList<>();
         List<String> ports = new ArrayList<>();
         List<String> peers = new ArrayList<>();
+        orgs.add(orgName);
+        ports.add(peerPort);
+        peers.add("peer0");
         AppUser appUser = this.userRepository.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new BadRequestException(String.format(Error.PHONE_NUMBER_NOT_FOUND, phoneNumber)));
         orgs.add("Client");
-        ports.add(appUser.getPort());
-        peers.add(appUser.getPeerName());
+        ports.add("7051");
+        peers.add("peer0");
+        
         Set<Organization> organizations = appUser.getOrganizations();
         for(Organization organization : organizations) {
-            orgs.add(organization.getHyperledgerName());
-            ports.add(organization.getPort());
-            peers.add("peer0");
+            if (!organization.getOrgName().equalsIgnoreCase(org.getOrgName())) {
+                orgs.add(organization.getHyperledgerName());
+                ports.add(organization.getPort());
+                peers.add("peer0");
+            }
         }
         return this.cmd.invokeChaincode(orgName, peerName, peerPort, channel, chaincode, script, orgs, ports, peers);
     }
@@ -397,6 +408,7 @@ public class ServiceImpl implements Service{
     
     public static void main(String[] args) {
 //        new ServiceImpl().registerUser("user123451232", "ClientMSP", "Client", "7054", 1);
-        new ServiceImpl().queryAllDiagnosisByPhoneNumber("user0783550324", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
+//        new ServiceImpl().queryAllDiagnosisByPhoneNumber("user0783550324", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
+        new ServiceImpl().queryAppointment("user0783550324", "Client", "herecchannel", "diagnosis", "D001");
     }
 }

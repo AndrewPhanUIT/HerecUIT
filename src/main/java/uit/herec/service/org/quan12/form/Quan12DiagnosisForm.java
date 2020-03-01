@@ -8,10 +8,10 @@ public class Quan12DiagnosisForm implements Serializable {
     private String code;
     private String patientPhoneNumber;
     private String createdAt;
-    private Quan12AppointmentFormDetail data;
+    private Quan12DiagnosisFormDetail data;
 
     public Quan12DiagnosisForm(String code, String patientPhoneNumber, String createdAt,
-            Quan12AppointmentFormDetail data) {
+            Quan12DiagnosisFormDetail data) {
         super();
         this.code = code;
         this.patientPhoneNumber = patientPhoneNumber;
@@ -47,11 +47,11 @@ public class Quan12DiagnosisForm implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Quan12AppointmentFormDetail getData() {
+    public Quan12DiagnosisFormDetail getData() {
         return data;
     }
 
-    public void setData(Quan12AppointmentFormDetail data) {
+    public void setData(Quan12DiagnosisFormDetail data) {
         this.data = data;
     }
 

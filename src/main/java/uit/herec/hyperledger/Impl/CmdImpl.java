@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,8 +16,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
+import com.owlike.genson.Genson;
 
+import uit.herec.common.dto.AppointmentDto;
 import uit.herec.common.dto.ChaincodeScript;
+import uit.herec.common.exception.BadRequestException;
 import uit.herec.hyperledger.Cmd;
 
 @Service
@@ -49,7 +53,7 @@ public class CmdImpl implements Cmd {
         }
     }
 
-    private void exec(Path dir, String... cmdArgs) throws IOException, InterruptedException {
+    private void exec(Path dir, String... cmdArgs) throws IOException, InterruptedException, BadRequestException {
         String cmdString = String.join(" ", cmdArgs);
         logger.info("exec - cmdString: " + cmdString);
         File dirFile = dir != null ? dir.toFile() : null;
@@ -61,8 +65,10 @@ public class CmdImpl implements Cmd {
                 logger.error("exec - " + line);
             }
         }
-        if (exitCode != 0)
+        if (exitCode != 0) {
             logger.error("Cant exec with cmdArgs: " + cmdString + " - dir: " + dir);
+            throw new BadRequestException("Cant invoke chaincode");
+        }
         else
             logger.info("Started fabric network");
     }
@@ -76,7 +82,8 @@ public class CmdImpl implements Cmd {
             ChaincodeScript script, List<String> orgs, List<String> ports, List<String> peers) {
         Gson gson = new Gson();
         logger.info("START INVOKING CHAINCODE");
-        Path path = Paths.get(ROOT_PATH, this.fabricFolderName);
+//        Path path = Paths.get(ROOT_PATH, this.fabricFolderName);
+        Path path = Paths.get(ROOT_PATH, "fabric-network");
         if (orgs.size() != ports.size() || orgs.size() != peers.size() || ports.size() != peers.size()) {
             logger.error("Something wrong with peer in channel");
             return false;
@@ -119,12 +126,34 @@ public class CmdImpl implements Cmd {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return false;
+        } catch(BadRequestException e1) {
+            e1.printStackTrace();
+            return false;
         }
         logger.info("END ADDING PERMISSION");
         return true;
     }
 
     public static void main(String[] args) {
-        new CmdImpl().addPermission("TanPhu", "11051", "herecchannel", "diagnosis");
+//        new CmdImpl().addPermission("TanPhu", "11051", "herecchannel", "diagnosis");
+        Gson gson = new Gson();
+        Genson genson = new Genson();
+        List<Object> args1 = new ArrayList<Object>();
+        AppointmentDto dto = new AppointmentDto("Benh@vien@quan@12", "Benh@vien@quan@12", "20200101", "20200120");
+        args1.add("0783550324");
+        args1.add(gson.toJson(dto));
+        ChaincodeScript script = new ChaincodeScript("addNewAppointmentRecord", args1);
+//        System.out.println(gson.toJson(script).replace("@", " "));
+        
+        List<String> orgs = new ArrayList<>();
+        List<String> ports = new ArrayList<>();
+        List<String> peers = new ArrayList<>();
+        orgs.add("Client");
+        ports.add("7051");
+        peers.add("peer0");
+        orgs.add("Quan12");
+        ports.add("9051");
+        peers.add("peer0");
+        new CmdImpl().invokeChaincode("Quan12", "peer0", "9054", "herecchannel", "diagnosis", script, orgs, ports, peers);
     }
 }

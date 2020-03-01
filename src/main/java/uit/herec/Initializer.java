@@ -7,9 +7,12 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import uit.herec.common.Constant;
 import uit.herec.common.Utils;
+import uit.herec.common.dto.ApiResponseDto;
 import uit.herec.common.form.RegisterForm;
 import uit.herec.controller.auth.AuthController;
 import uit.herec.dao.repository.AllergyRepository;
@@ -19,6 +22,7 @@ import uit.herec.dao.repository.DiagnosisRepository;
 import uit.herec.dao.repository.MedicationRepository;
 import uit.herec.hyperledger.Cmd;
 import uit.herec.hyperledger.Service;
+import uit.herec.service.IUserService;
 
 @Component
 public class Initializer{
@@ -47,12 +51,15 @@ public class Initializer{
     @Value("${hyperledger.port.client}")
     private String clientPort;
     
+    @Autowired
+    private IUserService userService;
+    
     @PostConstruct
     public void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTF-8"));
 //        this.hyperledgerCmd.startServer();
-        this.removePrevData();
-        this.initNewData();
+//        this.removePrevData();
+//        this.initNewData();
     }
     
     private void removePrevData() {
@@ -62,17 +69,21 @@ public class Initializer{
 //        File quan12Wallet = new File(rootPath + "/walletQuan12");
 //        Utils.deleteFolder(quan12Wallet);
         
-        this.userRepository.deleteAll();
         this.appointmentRepository.deleteAll();
-        this.diagnosisRepository.deleteAll();
         this.allergyRepository.deleteAll();
         this.medicationRepository.deleteAll();
+        this.diagnosisRepository.deleteAll();
+        this.userRepository.deleteAll();
     }
     
     private void initNewData() {
         this.hyperledgerService.enrollAdmin("ClientMSP", "Client", this.clientPort);
-//        RegisterForm form = new RegisterForm("Phan Thế Anh", "AnhPmcl2015", "0783550324");
-//        new AuthController().register(form);
+        RegisterForm form = new RegisterForm("Phan Thế Anh", "AnhPmcl2015", "0783550324");
+        
+        ApiResponseDto dto = this.userService.registerPatient(form);
+        if(dto.isSuccess()) {
+            this.hyperledgerService.registerUser("user" + form.getPhoneNumber(), "ClientMSP", "Client", "7054", 1);
+        }
     }
     
 }

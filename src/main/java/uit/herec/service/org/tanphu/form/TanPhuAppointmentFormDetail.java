@@ -6,22 +6,22 @@ public class TanPhuAppointmentFormDetail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String clinician;
+	private TanPhuClinicianForm clinician;
 	private String createdAt;
 	private String appointmentDate;
 
-	public TanPhuAppointmentFormDetail(String clinician, String createdAt, String appointmentDate) {
+	public TanPhuAppointmentFormDetail(TanPhuClinicianForm clinician, String createdAt, String appointmentDate) {
 		super();
 		this.clinician = clinician;
 		this.createdAt = createdAt;
 		this.appointmentDate = appointmentDate;
 	}
 
-	public String getClinician() {
+	public TanPhuClinicianForm getClinician() {
 		return clinician;
 	}
 
-	public void setClinician(String clinician) {
+	public void setClinician(TanPhuClinicianForm clinician) {
 		this.clinician = clinician;
 	}
 
