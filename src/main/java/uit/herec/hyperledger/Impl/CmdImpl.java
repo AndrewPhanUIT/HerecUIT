@@ -109,6 +109,9 @@ public class CmdImpl implements Cmd {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return false;
+        } catch (BadRequestException e) {
+            e.printStackTrace();
+            return false;
         }
         logger.info("END INVOKING CHAINCODE");
         return true;

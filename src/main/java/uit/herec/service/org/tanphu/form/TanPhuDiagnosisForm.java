@@ -7,10 +7,10 @@ public class TanPhuDiagnosisForm implements Serializable {
     private String code;
     private String patientPhoneNumber;
     private String createdAt;
-    private TanPhuAppointmentFormDetail data;
+    private TanPhuDiagnosisFormDetail data;
 
     public TanPhuDiagnosisForm(String code, String patientPhoneNumber, String createdAt,
-            TanPhuAppointmentFormDetail data) {
+            TanPhuDiagnosisFormDetail data) {
         super();
         this.code = code;
         this.patientPhoneNumber = patientPhoneNumber;
@@ -46,11 +46,11 @@ public class TanPhuDiagnosisForm implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public TanPhuAppointmentFormDetail getData() {
+    public TanPhuDiagnosisFormDetail getData() {
         return data;
     }
 
-    public void setData(TanPhuAppointmentFormDetail data) {
+    public void setData(TanPhuDiagnosisFormDetail data) {
         this.data = data;
     }
 

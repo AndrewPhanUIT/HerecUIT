@@ -1,4 +1,4 @@
-app_userdrop database herec_uit;
+drop database herec_uit;
 create database herec_uit;
 use herec_uit;
 
@@ -18,7 +18,8 @@ create table app_user (
 create table organization (
 	id int auto_increment primary key,
     name text,
-    hyperledger_name text not null
+    hyperledger_name text not null,
+    
 );
 
 create table app_role (

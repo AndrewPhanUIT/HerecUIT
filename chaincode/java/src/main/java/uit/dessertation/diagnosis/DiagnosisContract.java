@@ -30,23 +30,12 @@ public class DiagnosisContract implements ContractInterface {
         allergies.add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
         Diagnosis diagnosis = new Diagnosis("Bệnh viện quận 12", "Vũ Mạnh Cường @DT001", "20200201");
         diagnosis.getSymptons().add("Ho");
-        diagnosis.getSymptons().add("Sot cao");
+        diagnosis.getSymptons().add("Sốt cao");
         diagnosis.getMedications().add(new Medication(6, "2 lần / ngày", "Thuốc ho cho bé", "Uống vào buổi sáng và tối",
-                "20200101", "20200103"));
+                "20200103", "20200101"));
         diagnosis.getAllergies().add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
         DiagnosisDetail detail = new DiagnosisDetail("D001", "0783550324", diagnosis);
         stub.putStringState(detail.getKey(), gson.toJson(detail));
-        
-        List<Allergy> allergies1 = new ArrayList<Allergy>();
-        allergies1.add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
-        Diagnosis diagnosis1 = new Diagnosis("Bệnh viện quận Tân Phú", "Vũ Mạnh Cường @DT001", "20200201");
-        diagnosis1.getSymptons().add("Ho");
-        diagnosis1.getSymptons().add("Sot cao");
-        diagnosis1.getMedications().add(new Medication(6, "2 lần / ngày", "Thuốc ho cho bé", "Uống vào buổi sáng và tối",
-                "20200101", "20200103"));
-        diagnosis1.getAllergies().add(new Allergy("Paracetamol", "Nhẹ", "Ho"));
-        DiagnosisDetail detail1 = new DiagnosisDetail("D002", "0783550324", diagnosis1);
-        stub.putStringState(detail1.getKey(), gson.toJson(detail1));
         
         Appointment appointment = new Appointment("Bệnh viện quận 12", "Vũ Mạnh Cường@DT001", "20200101", "20200120");
         AppointmentDetail appDetail = new AppointmentDetail("A001", "0783550324", appointment);
@@ -87,7 +76,7 @@ public class DiagnosisContract implements ContractInterface {
     public int countDiagnosisInChannel(Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "D001";
-        final String endKey = "D020";
+        final String endKey = "D050";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         int count = 0;
         for (@SuppressWarnings("unused") KeyValue result : results) {
@@ -101,7 +90,7 @@ public class DiagnosisContract implements ContractInterface {
         List<DiagnosisDetail> details = new ArrayList<>();
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "D001";
-        final String endKey = "D020";
+        final String endKey = "D050";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         for (KeyValue result : results) {
             DiagnosisDetail detail = gson.fromJson(result.getStringValue(), DiagnosisDetail.class);
@@ -128,7 +117,7 @@ public class DiagnosisContract implements ContractInterface {
     public int countAppointmentInChannel(Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "A001";
-        final String endKey = "A020";
+        final String endKey = "A050";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         int count = 0;
         for (@SuppressWarnings("unused") KeyValue result : results) {
@@ -152,7 +141,7 @@ public class DiagnosisContract implements ContractInterface {
         List<AppointmentDetail> details = new ArrayList<>();
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "A001";
-        final String endKey = "A020";
+        final String endKey = "A050";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         for (KeyValue result : results) {
             AppointmentDetail detail = gson.fromJson(result.getStringValue(), AppointmentDetail.class);
