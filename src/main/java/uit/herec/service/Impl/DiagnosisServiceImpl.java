@@ -27,7 +27,7 @@ public class DiagnosisServiceImpl implements IDiagnosisService{
     
     @Override
     public DiagnosisDetailDto getDiagnosisDetailByKey(String hyperledgerName, String key) {
-        DiagnosisDetailDto dto = this.hyperledgerService.queryDiagnosis(hyperledgerName, "Client", "herecchannel", "diagnosis", key);
+        DiagnosisDetailDto dto = this.hyperledgerService.queryDiagnosisCmd(hyperledgerName, "Client", "herecchannel", "diagnosis", key);
         if(dto == null) {
             Diagnosis diagnosis = this.repository.findByKey(key)
                     .orElse(null);

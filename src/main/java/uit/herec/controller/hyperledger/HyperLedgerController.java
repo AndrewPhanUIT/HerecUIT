@@ -68,10 +68,10 @@ public class HyperLedgerController {
     @GetMapping("")
     public ResponseEntity<ApiResponseDto> query(@RequestParam String hyperledgerName) {
         String phoneNumber = this.userService.getPhoneNumber(hyperledgerName);
-        List<DiagnosisDetailDto> diagnosis = this.hyperledgerService.queryAllDiagnosisByPhoneNumber(hyperledgerName,
-                "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
-        List<AppointmentDetailDto> appointments = this.hyperledgerService.queryAllAppointmentsByPhoneNumber(
-                hyperledgerName, "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
+        List<DiagnosisDetailDto> diagnosis = this.hyperledgerService.queryAllDiagnosisByPhoneNumberCmd(hyperledgerName,
+                "Client", "herecchannel", "diagnosis", phoneNumber);
+        List<AppointmentDetailDto> appointments = this.hyperledgerService.queryAllAppointmentsByPhoneNumberCmd(
+                hyperledgerName, "Client", "herecchannel", "diagnosis", phoneNumber);
         List<Object> objs = new ArrayList<Object>();
         objs.add(diagnosis);
         objs.add(appointments);
@@ -85,8 +85,10 @@ public class HyperLedgerController {
     @GetMapping("/all/diagnosis")
     public ResponseEntity<ApiResponseDto> queryAllDiagnosis(@RequestParam String hyperledgerName) {
         String phoneNumber = this.userService.getPhoneNumber(hyperledgerName);
-        List<DiagnosisDetailDto> diagnosis = this.hyperledgerService.queryAllDiagnosisByPhoneNumber(hyperledgerName,
-                "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
+//        List<DiagnosisDetailDto> diagnosis = this.hyperledgerService.queryAllDiagnosisByPhoneNumber(hyperledgerName,
+//                "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
+        List<DiagnosisDetailDto> diagnosis = this.hyperledgerService.queryAllDiagnosisByPhoneNumberCmd(hyperledgerName,
+                "Client", "herecchannel", "diagnosis", phoneNumber);
         List<Object> objs = new ArrayList<Object>();
         objs.add(diagnosis);
         ApiResponseDto dto = new ApiResponseDto();
@@ -99,8 +101,10 @@ public class HyperLedgerController {
     @GetMapping("/all/appointment")
     public ResponseEntity<ApiResponseDto> queryAllAppointments(@RequestParam String hyperledgerName) {
         String phoneNumber = this.userService.getPhoneNumber(hyperledgerName);
-        List<AppointmentDetailDto> appointments = this.hyperledgerService.queryAllAppointmentsByPhoneNumber(
-                hyperledgerName, "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
+//        List<AppointmentDetailDto> appointments = this.hyperledgerService.queryAllAppointmentsByPhoneNumber(
+//                hyperledgerName, "ClientMSP", "Client", "herecchannel", "diagnosis", phoneNumber);
+        List<AppointmentDetailDto> appointments = this.hyperledgerService.queryAllAppointmentsByPhoneNumberCmd(
+                hyperledgerName, "Client", "herecchannel", "diagnosis", phoneNumber);
         List<Object> objs = new ArrayList<Object>();
         objs.add(appointments);
         ApiResponseDto dto = new ApiResponseDto();
@@ -145,15 +149,16 @@ public class HyperLedgerController {
             }
             return new PermissionDto(org.getName(), org.getOrgName(), false);
         }).sorted(Comparator.comparing(PermissionDto::isPermissioned)).collect(Collectors.toSet());
-        return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(true, Arrays.asList(dtos), ""),
-                HttpStatus.OK);
+        return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(true, Arrays.asList(dtos), ""), HttpStatus.OK);
     }
 
     @PutMapping("/add/permission")
     @PreAuthorize("hasRole('ROLE_PATIENT')")
     public ResponseEntity<ApiResponseDto> addPermission(@RequestBody PermissionForm permissionForm) {
-        this.hyperledgerService.addPermission(permissionForm.getOrgHyperledgerName(), permissionForm.getPhoneNumber());
-        return null;
+        if(this.hyperledgerService.addPermission(permissionForm.getOrgHyperledgerName(), permissionForm.getPhoneNumber())) {
+            return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(true, Arrays.asList(""), ""), HttpStatus.OK);
+        }
+        return new ResponseEntity<ApiResponseDto>(new ApiResponseDto(false, Arrays.asList(""), "Có lỗi xảy ra khi tiến hành phân quyền!"), HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/add/diagnosis")

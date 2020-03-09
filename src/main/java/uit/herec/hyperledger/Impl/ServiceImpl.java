@@ -406,9 +406,65 @@ public class ServiceImpl implements Service{
         return false;
     }
     
-    public static void main(String[] args) {
-//        new ServiceImpl().registerUser("user123451232", "ClientMSP", "Client", "7054", 1);
-//        new ServiceImpl().queryAllDiagnosisByPhoneNumber("user0783550324", "ClientMSP", "Client", "herecchannel", "diagnosis", "0783550324");
-        new ServiceImpl().queryAppointment("user0783550324", "Client", "herecchannel", "diagnosis", "D001");
+
+
+    @Override
+    public List<DiagnosisDetailDto> queryAllDiagnosisByPhoneNumberCmd(String username, String orgName,
+            String channel, String chaincode, String phoneNumber) {
+        AppUser appUser = this.userService.getUserByPhoneNumber(phoneNumber);
+        java.lang.reflect.Type type = new TypeToken<List<DiagnosisDetailDto>>() {}.getType();
+        List<Object> args1 = new ArrayList<Object>();
+        args1.add(phoneNumber);
+        ChaincodeScript script = new ChaincodeScript("queryAllDiagnosisByPhoneNumber", args1);
+        String result = this.cmd.queryChaincode(orgName, appUser.getPeerName(), appUser.getPort(), channel, chaincode, script);
+        if (result != null && !"".equals(result)) {
+            return gson.fromJson(result, type);
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<AppointmentDetailDto> queryAllAppointmentsByPhoneNumberCmd(String username, String orgName,
+            String channel, String chaincode, String phoneNumber) {
+        AppUser appUser = this.userService.getUserByPhoneNumber(phoneNumber);
+        java.lang.reflect.Type type = new TypeToken<List<AppointmentDetailDto>>() {}.getType();
+        List<Object> args1 = new ArrayList<Object>();
+        args1.add(phoneNumber);
+        ChaincodeScript script = new ChaincodeScript("queryAllAppointmentByPhoneNumber", args1);
+        String result = this.cmd.queryChaincode(orgName, appUser.getPeerName(), appUser.getPort(), channel, chaincode, script);
+        if (result != null && !"".equals(result)) {
+            return gson.fromJson(result, type);
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public DiagnosisDetailDto queryDiagnosisCmd(String userName, String orgName, String channel, String chaincode,
+            String key) {
+        AppUser appUser = this.userService.getUserByHyperledgerName(userName);
+        List<Object> args1 = new ArrayList<Object>();
+        args1.add(key);
+        ChaincodeScript script = new ChaincodeScript("queryDiagnosis", args1);
+        String result = this.cmd.queryChaincode(orgName, appUser.getPeerName(), appUser.getPort(), channel, chaincode, script);
+        if (result != null && !"".equals(result)) {
+            DiagnosisDetailDto dto = gson.fromJson(new String(result), DiagnosisDetailDto.class);
+            return dto;
+        }
+        return null;
+    }
+
+    @Override
+    public AppointmentDetailDto queryAppointmentCmd(String userName, String orgName, String channel, String chaincode,
+            String key) {
+        AppUser appUser = this.userService.getUserByHyperledgerName(userName);
+        List<Object> args1 = new ArrayList<Object>();
+        args1.add(key);
+        ChaincodeScript script = new ChaincodeScript("queryAppointment", args1);
+        String result = this.cmd.queryChaincode(orgName, appUser.getPeerName(), appUser.getPort(), channel, chaincode, script);
+        if (result != null && !"".equals(result)) {
+            AppointmentDetailDto dto = gson.fromJson(new String(result), AppointmentDetailDto.class);
+            return dto;
+        }
+        return null;
     }
 }

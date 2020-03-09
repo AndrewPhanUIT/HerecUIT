@@ -72,4 +72,10 @@ public class UserServiceImpl implements IUserService{
         return this.userRepository.saveAndFlush(appUser) != null;
     }
 
+    @Override
+    public AppUser getUserByHyperledgerName(String hyperledgerName) {
+        return this.userRepository.findByHyperledgerName(hyperledgerName)
+                .orElseThrow(()-> new BadRequestException(String.format(Error.HYPERLEDGER_NAME_NOT_FOUND, hyperledgerName)));
+    }
+
 }

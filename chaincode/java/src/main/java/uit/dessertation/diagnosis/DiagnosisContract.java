@@ -76,7 +76,7 @@ public class DiagnosisContract implements ContractInterface {
     public int countDiagnosisInChannel(Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "D001";
-        final String endKey = "D050";
+        final String endKey = "D020";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         int count = 0;
         for (@SuppressWarnings("unused") KeyValue result : results) {
@@ -90,7 +90,7 @@ public class DiagnosisContract implements ContractInterface {
         List<DiagnosisDetail> details = new ArrayList<>();
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "D001";
-        final String endKey = "D050";
+        final String endKey = "D020";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         for (KeyValue result : results) {
             DiagnosisDetail detail = gson.fromJson(result.getStringValue(), DiagnosisDetail.class);
@@ -117,7 +117,7 @@ public class DiagnosisContract implements ContractInterface {
     public int countAppointmentInChannel(Context ctx) {
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "A001";
-        final String endKey = "A050";
+        final String endKey = "A020";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         int count = 0;
         for (@SuppressWarnings("unused") KeyValue result : results) {
@@ -141,7 +141,7 @@ public class DiagnosisContract implements ContractInterface {
         List<AppointmentDetail> details = new ArrayList<>();
         ChaincodeStub stub = ctx.getStub();
         final String startKey = "A001";
-        final String endKey = "A050";
+        final String endKey = "A020";
         QueryResultsIterator<KeyValue> results = stub.getStateByRange(startKey, endKey);
         for (KeyValue result : results) {
             AppointmentDetail detail = gson.fromJson(result.getStringValue(), AppointmentDetail.class);

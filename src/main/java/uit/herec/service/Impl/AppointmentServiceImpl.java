@@ -27,7 +27,7 @@ public class AppointmentServiceImpl implements IAppointmentService{
     
     @Override
     public AppointmentDetailDto getAppointmentByKey(String hyperledgerName, String key) {
-        AppointmentDetailDto dto = this.hyperledgerService.queryAppointment(hyperledgerName, "Client", "herecchannel", "diagnosis", key);
+        AppointmentDetailDto dto = this.hyperledgerService.queryAppointmentCmd(hyperledgerName, "Client", "herecchannel", "diagnosis", key);
         if(dto == null) {
             Appointment appointment = this.appointmentRepository.findByKey(key)
                     .orElse(null);

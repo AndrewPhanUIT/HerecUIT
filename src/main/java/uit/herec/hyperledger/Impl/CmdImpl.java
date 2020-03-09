@@ -68,9 +68,35 @@ public class CmdImpl implements Cmd {
         if (exitCode != 0) {
             logger.error("Cant exec with cmdArgs: " + cmdString + " - dir: " + dir);
             throw new BadRequestException("Cant invoke chaincode");
-        }
-        else
+        } else
             logger.info("Started fabric network");
+    }
+
+    private String execWithInfoLog(Path dir, String... cmdArgs) throws IOException, InterruptedException, BadRequestException {
+        String cmdString = String.join(" ", cmdArgs);
+        logger.info("exec - cmdString: " + cmdString);
+        File dirFile = dir != null ? dir.toFile() : null;
+        Process process = Runtime.getRuntime().exec(cmdArgs, null, dirFile);
+        int exitCode = process.waitFor();
+        InputStream errorStream = process.getErrorStream();
+        InputStream infoStream = process.getInputStream();
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(errorStream))) {
+            for (String line; (line = reader.readLine()) != null;) {
+                logger.error("exec - " + line);
+            }
+        }
+        if (exitCode != 0) {
+            logger.error("Cant exec with cmdArgs: " + cmdString + " - dir: " + dir);
+            throw new BadRequestException("Cant invoke chaincode");
+        } else {
+            StringBuffer sb = new StringBuffer();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(infoStream))) {
+                for (String line; (line = reader.readLine()) != null;) {
+                    sb.append(line);
+                }
+            }
+            return sb.toString();
+        }
     }
 
     private void exec(String... cmdArgs) throws IOException, InterruptedException {
@@ -124,12 +150,12 @@ public class CmdImpl implements Cmd {
         Path path = Paths.get(ROOT_PATH, "fabric-network");
 
         try {
-            this.exec(path, "./addPermission.sh", String.format("%sMSP", orgName), peerPort,
-                    orgName.toLowerCase(), channel, chaincode);
+            this.exec(path, "./addPermission.sh", String.format("%sMSP", orgName), peerPort, orgName.toLowerCase(),
+                    channel, chaincode);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             return false;
-        } catch(BadRequestException e1) {
+        } catch (BadRequestException e1) {
             e1.printStackTrace();
             return false;
         }
@@ -137,26 +163,58 @@ public class CmdImpl implements Cmd {
         return true;
     }
 
-    public static void main(String[] args) {
-//        new CmdImpl().addPermission("TanPhu", "11051", "herecchannel", "diagnosis");
+    @Override
+    public String queryChaincode(String orgName, String peerName, String peerPort, String channel, String chaincode,
+            ChaincodeScript script) {
         Gson gson = new Gson();
-        Genson genson = new Genson();
-        List<Object> args1 = new ArrayList<Object>();
-        AppointmentDto dto = new AppointmentDto("Benh@vien@quan@12", "Benh@vien@quan@12", "20200101", "20200120");
-        args1.add("0783550324");
-        args1.add(gson.toJson(dto));
-        ChaincodeScript script = new ChaincodeScript("addNewAppointmentRecord", args1);
-//        System.out.println(gson.toJson(script).replace("@", " "));
-        
-        List<String> orgs = new ArrayList<>();
-        List<String> ports = new ArrayList<>();
-        List<String> peers = new ArrayList<>();
-        orgs.add("Client");
-        ports.add("7051");
-        peers.add("peer0");
-        orgs.add("Quan12");
-        ports.add("9051");
-        peers.add("peer0");
-        new CmdImpl().invokeChaincode("Quan12", "peer0", "9054", "herecchannel", "diagnosis", script, orgs, ports, peers);
+        logger.info("START QUERY CHAINCODE");
+//        Path path = Paths.get(ROOT_PATH, this.fabricFolderName);
+        Path path = Paths.get(ROOT_PATH, "fabric-network");
+        if (script == null) {
+            logger.error("Chaincode Script cannot be null");
+            return "";
+        }
+        try {
+            String result = this.execWithInfoLog(path, "./queryChaincode.sh", String.format("%sMSP", orgName), peerName, peerPort,
+                    orgName.toLowerCase(), channel, chaincode, gson.toJson(script));
+            return result;
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            return "";
+        } catch (BadRequestException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
+    
+    public static void main(String[] args) {
+        Gson gson = new Gson();
+//        new CmdImpl().addPermission("TanPhu", "11051", "herecchannel", "diagnosis");
+        
+//        List<Object> args1 = new ArrayList<Object>();
+//        AppointmentDto dto = new AppointmentDto("Benh@vien@quan@12", "Benh@vien@quan@12", "20200101", "20200120");
+//        args1.add("0783550324");
+//        args1.add(gson.toJson(dto));
+//        ChaincodeScript script = new ChaincodeScript("addNewAppointmentRecord", args1);
+//
+//        List<String> orgs = new ArrayList<>();
+//        List<String> ports = new ArrayList<>();
+//        List<String> peers = new ArrayList<>();
+//        orgs.add("Client");
+//        ports.add("7051");
+//        peers.add("peer0");
+//        orgs.add("Quan12");
+//        ports.add("9051");
+//        peers.add("peer0");
+//        new CmdImpl().invokeChaincode("Quan12", "peer0", "9054", "herecchannel", "diagnosis", script, orgs, ports,
+//                peers);
+        
+        List<Object> args1 = new ArrayList<Object>();
+        args1.add("A001");
+        ChaincodeScript script = new ChaincodeScript("queryAppointment", args1);
+        String result = new CmdImpl().queryChaincode("Client", "peer0", "7051", "herecchannel", "diagnosis", script);
+        System.out.println(result);
+    }
+
+
 }
